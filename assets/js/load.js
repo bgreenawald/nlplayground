@@ -1,2 +1,2 @@
-$("#sidebar").load("/sidebar.html");
-$("#header").load("/header.html");
+$("#sidebar").load("/sidebar");
+$("#header").load("/header");
