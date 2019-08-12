@@ -10,18 +10,7 @@
     <title>Generic - Editorial by HTML5 UP</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <link rel="stylesheet" href="../assets/css/main.css" />
-
-    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.444.0.min.js"></script>
-
-	<script>
-		// Initialize the Amazon Cognito credentials provider
-		AWS.config.region = 'us-east-1'; // Region
-		AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-			IdentityPoolId: 'us-east-1:6cc3d4dd-c3a4-4cf9-a26a-98c22aa8b54c',
-		});
-		var lambda = new AWS.Lambda();
-	</script>
+    <link rel="stylesheet" href="/css/main.css" />
 </head>
 
 <body class="is-preload">
@@ -32,18 +21,6 @@
         <!-- Main -->
         <div id="main">
             <div class="inner">
-
-                <!-- Header -->
-                <header id="header">
-                    <a href="index.html" class="logo"><strong>Editorial</strong> by HTML5 UP</a>
-                    <ul class="icons">
-                        <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
-                        <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
-                        <li><a href="#" class="icon fa-snapchat-ghost"><span class="label">Snapchat</span></a></li>
-                        <li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
-                        <li><a href="#" class="icon fa-medium"><span class="label">Medium</span></a></li>
-                    </ul>
-                </header>
 
                 <!-- Content -->
                 <section>
@@ -80,12 +57,12 @@
     </div>
 
     <!-- Scripts -->
-    <script src="/assets/js/jquery.min.js"></script>
-    <script src="/assets/js/browser.min.js"></script>
-    <script src="/assets/js/breakpoints.min.js"></script>
-    <script src="/assets/js/util.js"></script>
-    <script src="/assets/js/main.js"></script>
-    <script src="/assets/js/load.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/browser.min.js"></script>
+    <script src="/js/breakpoints.min.js"></script>
+    <script src="/js/util.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/load.js"></script>
     <script>
         // Back end logic functions
         function callAwsLambdaFunction() {

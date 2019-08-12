@@ -16,18 +16,39 @@ def header():
 
 
 # Game routes
-@app.route('/games/madgab')
-def madgab():
-    return render_template('games/madgab.html')
+@app.route('/games/<name>')
+def games(name):
+    name_map = {
+        "madgab": 'games/madgab.html',
+    }
 
-
+    if name not in name_map:
+        return render_template("index.html")
+    else:
+        return render_template(name_map[name])
 
 # Mix and mash routes
+@app.route('/mixmash/<name>')
+def mixmash(name):
+    name_map = {
+        "biblicaltrump": 'mixmash/biblicaltrump.html',
+    }
 
-
+    if name not in name_map:
+        return render_template("index.html")
+    else:
+        return render_template(name_map[name])
 
 # Text generation routes
+@app.route('/textgen/<name>')
+def textgen(name):
+    name_map = {
+    }
 
+    if name not in name_map:
+        return render_template("index.html")
+    else:
+        return render_template(name_map[name])
 
 if __name__ == "__main__":
     app.run(debug=True)
