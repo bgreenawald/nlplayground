@@ -89,10 +89,13 @@
                     "mechanism": mechanism
                 }),
                 success: function(result){
-                    //madGabResults = JSON.parse(result.Payload);
-                    mixAndMashResults = JSON.parse(result);
-                    console.log(mixAndMashResults);
-                    document.getElementById("result").innerHTML = mixAndMashResults;
+                    console.log(result);
+                    if(result["status_code"] == 200){
+                        document.getElementById("result").innerHTML = result["message"];
+                    }
+                    else {
+                        document.getElementById("result").innerHTML = "An error has occured";
+                    }
                 }
             })
         };
