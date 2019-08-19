@@ -83,26 +83,25 @@
             var message = document.getElementById("message").value;
             var difficulty = parseDifficulty();
 
-            // create JSON object for parameters for invoking Lambda function
-            var madGabParams = {
-                FunctionName: 'MadGab',
-                InvocationType: 'RequestResponse',
-                LogType: 'None',
-                Payload: JSON.stringify({
+            $.ajax({
+                url: "/api/madgab",
+                contentType: "application/json",
+                method: "POST",
+                dataType: 'json',
+                data: JSON.stringify({
                     "message": message,
                     "difficulty": difficulty
-                })
-            };
-            // create variable to hold data returned by the Lambda function
-            var madGabResults;
-            lambda.invoke(madGabParams, function (error, data) {
-                if (error) {
-                    prompt(error);
-                } else {
-                    madGabResults = JSON.parse(data.Payload);
-                    document.getElementById("result").innerHTML = madGabResults;
+                }),
+                success: function(result){
+                    console.log(result);
+                    if(result["status_code"] == 200){
+                        document.getElementById("result").innerHTML = result["message"];
+                    }
+                    else {
+                        document.getElementById("result").innerHTML = "An error has occured";
+                    }
                 }
-            });
+            })
         };
 
         function parseDifficulty() {

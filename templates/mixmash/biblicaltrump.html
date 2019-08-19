@@ -77,28 +77,24 @@
                 var mechanism = memory_val;
             }
 
-            // create JSON object for parameters for invoking Lambda function
-            var mixParams = {
-                FunctionName: 'mix-and-mash',
-                InvocationType: 'RequestResponse',
-                LogType: 'None',
-                Payload: JSON.stringify({
+            $.ajax({
+                url: "/api/mixandmash",
+                contentType: "application/json",
+                method: "POST",
+                dataType: 'json',
+                data: JSON.stringify({
                     "message": message,
                     "project": "biblical_trump",
                     "memory": memory,
                     "mechanism": mechanism
-                })
-            };
-            // create variable to hold data returned by the Lambda function
-            var mixResults;
-            lambda.invoke(mixParams, function (error, data) {
-                if (error) {
-                    prompt(error);
-                } else {
-                    mixResults = JSON.parse(data.Payload);
-                    document.getElementById("result").innerHTML = mixResults;
+                }),
+                success: function(result){
+                    //madGabResults = JSON.parse(result.Payload);
+                    mixAndMashResults = JSON.parse(result);
+                    console.log(mixAndMashResults);
+                    document.getElementById("result").innerHTML = mixAndMashResults;
                 }
-            });
+            })
         };
     </script>
 
