@@ -5,13 +5,15 @@ from flask import Blueprint, jsonify, render_template, request
 
 api = Blueprint("api", __name__,)
 
+API_KEY = "rZCF070Iie2PlGnpmXD2f7sa5Ys153Aj2x204KW9"
+
 # Generic api
 @api.route('/api/madgab', methods=["POST"])
 def madgab():
     print(type(request.json))
     headers = {
         'Content-type': 'application/json',
-        'x-api-key': 'ZHLM6JdUyQaP1P2cpG1g54IhGk6Xf6Cv9vnIOLmL',
+        'x-api-key': API_KEY,
     }
 
     base_url = 'https://e5atpy4c73.execute-api.us-east-1.amazonaws.com/Prod'
@@ -19,14 +21,14 @@ def madgab():
     url = '{}/{}'.format(base_url, resource_path)
     r = requests.post(url, data=json.dumps(request.json), headers=headers)
     print(r.json())
-    return jsonify({"status_code": r.status_code, "message": r.json()})
+    return jsonify({"statusCode": r.status_code, "body": r.json()})
 
 @api.route('/api/mixandmash', methods=["POST"])
-def mixandmash():
+def mix_and_mash():
     print(type(request.json))
     headers = {
         'Content-type': 'application/json',
-        'x-api-key': 'rZCF070Iie2PlGnpmXD2f7sa5Ys153Aj2x204KW9',
+        'x-api-key': API_KEY,
     }
 
     base_url = 'https://e5atpy4c73.execute-api.us-east-1.amazonaws.com/Prod'
@@ -34,4 +36,20 @@ def mixandmash():
     url = '{}/{}'.format(base_url, resource_path)
     r = requests.post(url, data=json.dumps(request.json), headers=headers)
     print(r.json())
-    return jsonify({"status_code": r.status_code, "message": r.json()})
+    return jsonify({"statusCode": r.status_code, "body": r.json()})
+
+@api.route('/api/nntextgen')
+def nn_text_gen():
+
+
+    headers = {
+        'Content-type': 'application/json',
+        'x-api-key': API_KEY,
+    }
+
+    base_url = 'https://e5atpy4c73.execute-api.us-east-1.amazonaws.com/Prod'
+    resource_path = 'nn-text-gen'
+    url = '{}/{}'.format(base_url, resource_path)
+    r = requests.post(url, data=json.dumps(request.json), headers=headers)
+
+    return jsonify({"statusCode": r.status_code, "body": r.json()})

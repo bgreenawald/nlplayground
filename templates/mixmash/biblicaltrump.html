@@ -21,32 +21,33 @@
         <!-- Main -->
         <div id="main">
             <div class="inner">
+                <header id="header">
+                </header>
 
                 <!-- Content -->
-                <section>
-                    <header class="main">
+                <section id="banner">
+                    <div class="content">
+
                         <h1>Biblical Trump</h1>
-                    </header>
+                        <div>
+                            <input type="text" id="message" class="nlp">
+                            <button id="generate" onclick="callAwsLambdaFunction()">Generate</button>
+                        </div>
+                        <div id="result"></div>
 
-                    <div id=result></div>
-
-                    <div>
-                        <input type="text" id="message" class="nlp">
-                        <button onclick="callAwsLambdaFunction()">Generate</button>
-                    </div>
-
-                    <div>
-                        <div class="col-12">
-                            <h2>Memory</h2>
-                            <select name="memory" id="memory">
-                                <option value="none" selected>No memory</option>
-                                <option value="uniform">Uniform</option>
-                                <option value="decaying">Decaying</option>
-                                <option value="random">Random</option>
-                            </select>
+                        <div>
+                            <div class="col-12">
+                                <h2>Memory</h2>
+                                <select name="memory" id="memory">
+                                    <option value="none" selected>No memory</option>
+                                    <option value="uniform">Uniform</option>
+                                    <option value="decaying">Decaying</option>
+                                    <option value="random">Random</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-
+                </section>
             </div>
         </div>
 
@@ -88,13 +89,16 @@
                     "memory": memory,
                     "mechanism": mechanism
                 }),
-                success: function(result){
-                    console.log(result);
-                    if(result["status_code"] == 200){
-                        document.getElementById("result").innerHTML = result["message"];
-                    }
-                    else {
-                        document.getElementById("result").innerHTML = "An error has occured";
+                beforeSend: function() {
+                    $("#result").html("<p>Your phrase is loading, this can take a couple of seconds.</p>");
+                    $("#generate").prop("disabled", true);
+                },
+                success: function (result) {
+                    $("#generate").prop("disabled", false);
+                    if (result["status_code"] == 200) {
+                        $("#result").html(result["message"]);
+                    } else {
+                        $("#result").html("An error has occured");
                     }
                 }
             })

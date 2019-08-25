@@ -1,0 +1,232 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+
+<head>
+    <title>Generic - Editorial by HTML5 UP</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="/css/main.css" />
+    <style>
+    .option {
+        margin-bottom: 15px;
+    }
+
+    .alert {
+        padding: 20px;
+        background-color: #f44336; /* Red */
+        color: white;
+        margin-bottom: 15px;
+    }
+    /* The close button */
+    .closebtn {
+        margin-left: 15px;
+        color: white;
+        font-weight: bold;
+        float: right;
+        font-size: 22px;
+        line-height: 20px;
+        cursor: pointer;
+        transition: 1s;
+    }
+
+    .closebtn:hover {
+        color: black;
+    }
+    </style>
+</head>
+
+<body class="is-preload">
+
+    <!-- Wrapper -->
+    <div id="wrapper">
+
+        <!-- Main -->
+        <div id="main">
+            <div class="inner">
+                <header id="header">
+                </header>
+                <!-- Content -->
+                <section id="banner">
+                    <div class="content">
+
+                        <h1>Boy Names</h1>
+                        <div>
+                            <p>Generates new boy names from a dataset of <a href="/nntextgen/boy_names_data">1000 boy names</a>. Enter some starting characters in the box below to get the algorithm started, or leave blank for a random start. Tweak the options to your liking and click "Generate" when you're ready!</p>
+
+                            <div class="row">
+                                <div class="col-8 col-12-small">
+                                    <input type="text" id="message" class="nlp">
+                                </div>
+                                <div class="col-4 col-12-small">
+                                    <button id="generate" onclick="callAwsLambdaFunction()">Generate</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="result"></div>
+                        <hr>
+
+                        <div style="margin-top: 25px">
+                            <h2>Additional Options</h2>
+
+                            <div id="error_div" class="alert" style="display: none">
+                                 <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                                 <strong>Error </strong><span id="error_msg"></span>
+                            </div>
+
+                            <div class="row option">
+                                <div class="col-2 col-12-small">
+                                    <strong>Number to generate</strong>
+                                </div>
+                                <div class="col-4 col-12-small">
+                                    <select name="iters" id="iters">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5" selected>5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row option">
+                                <div class="col-2 col-12-small">
+                                    <strong>Exactness</strong>
+                                </div>
+                                <div class="col-4 col-12-small">
+                                    <select name="exact" id="exact" onchange="toggleTemperature()">
+                                        <option value="exact" selected>Exact</option>
+                                        <option value="probabilistic">Probabilistic</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="temperature_div" class="row option" style="display: none">
+                                <div class="col-2 col-12-small">
+                                    <strong>Temperature</strong>
+                                </div>
+                                <div class="col-4 col-12-small">
+                                    <input type="text" value="1" id="temperature">
+                                </div>
+                            </div>
+                            <div class="row option">
+                                <div class="col-2 col-12-small">
+                                    <strong>Starting criteria</strong>
+                                </div>
+                                <div class="col-4 col-12-small">
+                                    <select name="start" id="start">
+                                        <option value="same" selected>Same start</option>
+                                        <option value="continuous">Continuous</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row option">
+                                <div class="col-2 col-12-small">
+                                    <strong>Postprocess</strong>
+                                </div>
+                                <div class="col-4 col-12-small">
+                                    <select name="post" id="post">
+                                        <option value="no" selected>No</option>
+                                        <option value="yes">Yes</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div id="sidebar">
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/browser.min.js"></script>
+    <script src="/js/breakpoints.min.js"></script>
+    <script src="/js/util.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/load.js"></script>
+    <script>
+        function toggleTemperature() {
+            var exact = $("#exact").val();
+            if(exact == "exact") {
+                $("#temperature_div").hide();
+            } else {
+                $("#temperature_div").show();
+            }
+        }
+
+        function errorHTML(msg) {
+            $("#error_div").show();
+            $("#error_msg").html(msg);
+        }
+        // Back end logic functions
+        function callAwsLambdaFunction() {
+            var iters = $("#iters").val();
+            var exact = $("#exact").val();
+            var temperature = $("#temperature").val();
+            var start = $("#start").val();
+            var post = $("#post").val();
+
+            // Validate the temperature
+            temperature = parseFloat(temperature);
+
+            if (isNaN(temperature) || temperature <= 0) {
+                $("#error_div").html(errorHTML("Temperature must be a number greater than 0."))
+                return
+            }
+
+            // Create the payload
+            var res = {
+                "iters": iters,
+                "exact": exact == "exact",
+                "temperature": temperature,
+                "same_start": start == "same",
+                "postprocess": post == "yes",
+            }
+            console.log(res);
+
+            /*
+            $.ajax({
+                url: "/api/mixandmash",
+                contentType: "application/json",
+                method: "POST",
+                dataType: 'json',
+                data: JSON.stringify({
+                    "message": message,
+                    "project": "biblical_trump",
+                    "memory": memory,
+                    "mechanism": mechanism
+                }),
+                beforeSend: function() {
+                    $("#result").html("<p>Your phrase is loading, this can take a couple of seconds.</p>");
+                    $("#generate").prop("disabled", true);
+                },
+                success: function (result) {
+                    $("#generate").prop("disabled", false);
+                    console.log(result);
+                    if (result["status_code"] == 200) {
+                        $("#result").html(result["message"]);
+                    } else {
+                        $("#result").html("An error has occured");
+                    }
+                }
+            }) */
+        };
+    </script>
+
+</body>
+
+</html>

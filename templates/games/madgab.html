@@ -22,44 +22,36 @@
         <div id="main">
             <div class="inner">
 
-                <!-- Header -->
                 <header id="header">
-                    <a href="index.html" class="logo"><strong>Editorial</strong> by HTML5 UP</a>
-                    <ul class="icons">
-                        <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
-                        <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
-                        <li><a href="#" class="icon fa-snapchat-ghost"><span class="label">Snapchat</span></a></li>
-                        <li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
-                        <li><a href="#" class="icon fa-medium"><span class="label">Medium</span></a></li>
-                    </ul>
                 </header>
 
                 <!-- Content -->
-                <section>
-                    <header class="main">
+                <section id="banner">
+                    <div class="content">
                         <h1>Mad Gab Generator</h1>
-                    </header>
 
-                    <div id=result></div>
 
-                    <div>
-                        <input type="text" id="message" class="nlp">
-                        <button onclick="callAwsLambdaFunction()">Generate</button>
-                    </div>
-                    <br>
-                    <div>
-                        <h3>Select difficulty</h3>
-
-                        <div class="col-4 col-12-small">
-                            <input type="radio" id="difficulty-easy" name="demo-priority" checked>
-                            <label for="difficulty-easy">Easy</label>
+                        <div>
+                            <input type="text" id="message" class="nlp">
+                            <button onclick="callAwsLambdaFunction()" id="generate">Generate</button>
                         </div>
-                        <div class="col-4 col-12-small">
-                            <input type="radio" id="difficulty-hard" name="demo-priority">
-                            <label for="difficulty-hard">Hard</label>
+                        <div id="result"></div>
+
+                        <br>
+                        <div>
+                            <h3>Select difficulty</h3>
+
+                            <div class="col-4 col-12-small">
+                                <input type="radio" id="difficulty-easy" name="demo-priority" checked>
+                                <label for="difficulty-easy">Easy</label>
+                            </div>
+                            <div class="col-4 col-12-small">
+                                <input type="radio" id="difficulty-hard" name="demo-priority">
+                                <label for="difficulty-hard">Hard</label>
+                            </div>
                         </div>
                     </div>
-
+                </section>
             </div>
         </div>
 
@@ -92,13 +84,16 @@
                     "message": message,
                     "difficulty": difficulty
                 }),
-                success: function(result){
-                    console.log(result);
-                    if(result["status_code"] == 200){
-                        document.getElementById("result").innerHTML = result["message"];
-                    }
-                    else {
-                        document.getElementById("result").innerHTML = "An error has occured";
+                beforeSend: function() {
+                    $("#result").html("<p>Your word is loading, this can take a couple of seconds.</p>");
+                    $("#generate").prop("disabled", true);
+                },
+                success: function (result) {
+                    $("#generate").prop("disabled", false);
+                    if (result["status_code"] == 200) {
+                        $("#result").html(result["message"]);
+                    } else {
+                        $("#result").html("An error has occured");
                     }
                 }
             })
@@ -108,13 +103,13 @@
             var easy = document.getElementById("difficulty-easy");
             var hard = document.getElementById("difficulty-hard");
 
-             if (easy.checked) {
-                 return "easy";
-             }
+            if (easy.checked) {
+                return "easy";
+            }
 
-             if (hard.checked) {
-                 return "hard";
-             }
+            if (hard.checked) {
+                return "hard";
+            }
         }
     </script>
 

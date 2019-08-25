@@ -40,9 +40,11 @@ def mixmash(name):
         return render_template(name_map[name])
 
 
-@routes.route('/textgen/<name>')
+@routes.route('/nntextgen/<name>')
 def textgen(name):
     name_map = {
+        "boy_names": "nntextgen/boy_names.html",
+        "boy_names_data": "nntextgen/boy_names_data.html",
     }
 
     if name not in name_map:
