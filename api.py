@@ -38,9 +38,8 @@ def mix_and_mash():
     print(r.json())
     return jsonify({"statusCode": r.status_code, "body": r.json()})
 
-@api.route('/api/nntextgen')
+@api.route('/api/nntextgen', methods=["POST"])
 def nn_text_gen():
-
 
     headers = {
         'Content-type': 'application/json',
@@ -50,6 +49,6 @@ def nn_text_gen():
     base_url = 'https://e5atpy4c73.execute-api.us-east-1.amazonaws.com/Prod'
     resource_path = 'nn-text-gen'
     url = '{}/{}'.format(base_url, resource_path)
-    r = requests.post(url, data=json.dumps(request.json), headers=headers)
-
-    return jsonify({"statusCode": r.status_code, "body": r.json()})
+    # r = requests.post(url, data=json.dumps(request.json), headers=headers)
+    dummy_ret = [{"message": "brayd", "isOriginal": True, "sequence_matcher": "brayden", "levenshtein": "brayden", "damerau_levenshtein": "brady", "hamming": "brayden", "jaro": "brady", "jaro_winkler": "brady", "subsets": ["brayden", "braydon", "ray"]}, {"message": "denetrius", "isOriginal": True, "sequence_matcher": "demetrius", "levenshtein": "demetrius", "damerau_levenshtein": "demetrius", "hamming": "demetrius", "jaro": "demetrius", "jaro_winkler": "demetrius", "subsets": []}, {"message": "ben", "isOriginal": False}, {"message": "hrancisco", "isOriginal": True, "sequence_matcher": "francisco", "levenshtein": "francisco", "damerau_levenshtein": "francisco", "hamming": "francisco", "jaro": "francisco", "jaro_winkler": "francisco", "subsets": []}, {"message": "jacro", "isOriginal": True, "sequence_matcher": "jacob", "levenshtein": "jairo", "damerau_levenshtein": "jairo", "hamming": "jairo", "jaro": "jacob", "jaro_winkler": "jacob", "subsets": []}]
+    return jsonify({"statusCode": 200, "body": dummy_ret})

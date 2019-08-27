@@ -1,0 +1,347 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146481414-1"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-146481414-1');
+    </script>
+
+    <title>Boy Names</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="/css/main.css" />
+</head>
+
+<body class="is-preload">
+
+    <!-- Wrapper -->
+    <div id="wrapper">
+
+        <!-- Main -->
+        <div id="main">
+            <div class="inner">
+                <header id="header">
+                </header>
+                <!-- Content -->
+                <section id="banner">
+                    <div class="content">
+
+                        <h1>{{ title }}</h1>
+                        <div>
+                            <div id="description">
+                                {{ description }}
+                            </div>
+
+                            <div class="row">
+                                <div class="col-8 col-12-small buffer-top">
+                                    <input type="text" id="message" class="nlp">
+                                </div>
+                                <div class="col-4 col-12-small buffer-top">
+                                    <button id="generate" onclick="callAwsLambdaFunction()">Generate</button>
+                                </div>
+                            </div>
+
+                            <div id="results_div" style="margin-top: 25px">
+                                <div id="result"></div>
+                                <div id="post_div"></div>
+                            </div>
+
+                        </div>
+
+                        <hr>
+
+                        <div style="margin-top: 25px">
+                            <h2>Additional Options</h2>
+
+                            <div class="option">
+                                <button class="button small" id="toggle_info" onclick="toggleInfo()">Read about options</button>
+
+                                <div id="info" style="display: none;">
+                                    <ol>
+                                        <li><strong>Number to generate: </strong>This is the number of observations to generate when you hit generate. Since it can take so long for the model to boot up, it's nice to get more than one result at a time.</li>
+                                        <li><strong>Exactness: </strong>A nueral network model doesn't just come up with a single prediction, it comes up with a probabilistic distribution over all possible predictions (in this case, the next letter in the sequence). If Exactness is set to "Exact", the model will always choose the most probable option. If it is set to "Probabilstic," it will randomly draw from the distribution. Generally, setting to "Exact" will give you more sensible names while setting to "Probabilistic" will give you weirder ones.</li>
+                                        <li><strong>Temperature: </strong>This option is only available if "Exactness" is set to "Probabilistic". You can enter any positive number for this option. It essentially serves as a scaling factor for the probabilistic distribution output by the model. Low temperature values will introduce greater discrepancy to the distribution, resulting in more normal names. Higher values will even out the distribution, causing weirder names. A good range of these values is [0.01, 2]. Higher than that an the results become gibberish.</li>
+                                        <li><strong>Starting seed: </strong>When generating multiple observations, this option tells the model how to begin each observation. If set to "Same start", all returned observations will start with your provided starter. So if you entered "M" into the box, all the return values will start with the letter "M". If set to "Continuous", the start for each observation will be based on the previous one, so only the first observation is garaunteed to start with your starter. </li>
+                                        <li><strong>Postprocess: </strong>Whether or not to perform the postprocessing step. The postprocessing compares each resulting observation and figures out which observation in the original dataset it is most like using a variety of criteria.</li>
+                                    </ol>
+                                </div>
+                            </div>
+
+                            <div id="error_div" class="alert" style="display: none">
+                                 <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                                 <strong>Error </strong><span id="error_msg"></span>
+                            </div>
+
+                            <div class="row option">
+                                <div class="col-2 col-12-small">
+                                    <strong>Number to generate</strong>
+                                </div>
+                                <div class="col-4 col-12-small">
+                                    <select name="iters" id="iters">
+                                        {% for val in iters %}
+                                            {% if val == selected %}
+                                                <option value="{{ val }}" selected>{{ val }}</option>
+                                            {% else %}
+                                                <option value="{{ val }}">{{ val }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row option">
+                                <div class="col-2 col-12-small">
+                                    <strong>Exactness</strong>
+                                </div>
+                                <div class="col-4 col-12-small">
+                                    <select name="exact" id="exact" onchange="toggleTemperature()">
+                                        <option value="exact" selected>Exact</option>
+                                        <option value="probabilistic">Probabilistic</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="temperature_div" class="row option" style="display: none">
+                                <div class="col-2 col-12-small">
+                                    <strong>Temperature</strong>
+                                </div>
+                                <div class="col-4 col-12-small">
+                                    <input type="text" value="1" id="temperature">
+                                </div>
+                            </div>
+                            <div class="row option">
+                                <div class="col-2 col-12-small">
+                                    <strong>Starting seed</strong>
+                                </div>
+                                <div class="col-4 col-12-small">
+                                    <select name="start" id="start">
+                                        <option value="same" selected>Same start</option>
+                                        <option value="continuous">Continuous</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row option">
+                                <div class="col-2 col-12-small">
+                                    <strong>Postprocess</strong>
+                                </div>
+                                <div class="col-4 col-12-small">
+                                    <select name="post" id="post">
+                                        <option value="no" selected>No</option>
+                                        <option value="yes">Yes</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row option">
+                            {% if gallery_description is defined %}
+                            <div class="col-6 col-12-small">
+                                <h2>Gallery</h2>
+                                <div id="gallery_description">
+                                    {{ gallery_description }}
+                                </div>
+
+                                {% if gallery is defined %}
+                                <div>
+                                    <button id="toggle_gallery" onclick="toggleGallery()" class="button small">Hide the gallery</button>
+                                    <div id="gallery" class="buffer-top">
+                                        <ol>
+                                            {% for elem in gallery %}
+                                            <li>{{ elem }}</li>
+                                            {% endfor %}
+                                        </ol>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                {% if gallery_full is defined %}
+                                <div class="buffer-top">
+                                    {{ gallery_full }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+
+                            {% if data_description is defined %}
+                            <div class="col-6 col-12-small">
+                                <h2>Data</h2>
+                                <div id="data_description">
+                                    {{ data_description }}
+                                </div>
+
+                                {% if data_full is defined %}
+                                <div>
+                                    {{ data_full }}
+                                </div>
+                                {% endif %}
+
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div id="sidebar">
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/browser.min.js"></script>
+    <script src="/js/breakpoints.min.js"></script>
+    <script src="/js/util.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/load.js"></script>
+    <script>
+
+        var temp;
+        function cap(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        function toggleInfo() {
+            if ($("#info").css("display") == "none") {
+                $("#info").show();
+                $("#toggle_info").html("Hide options info");
+            } else {
+                $("#info").hide();
+                $("#toggle_info").html("Read about options");
+            }
+        }
+
+        function toggleGallery() {
+            if ($("#gallery").css("display") == "none") {
+                $("#gallery").show();
+                $("#toggle_gallery").html("Hide the gallery");
+            } else {
+                $("#gallery").hide();
+                $("#toggle_gallery").html("Show the gallery");
+            }
+        }
+
+        function toggleTemperature() {
+            var exact = $("#exact").val();
+            if(exact == "exact") {
+                $("#temperature_div").hide();
+            } else {
+                $("#temperature_div").show();
+            }
+        }
+
+        function errorHTML(msg) {
+            $("#error_div").show();
+            $("#error_msg").html(msg);
+        }
+
+        // Back end logic functions
+        function callAwsLambdaFunction() {
+            var seed = $("#message").val();
+            var iters = $("#iters").val();
+            var exact = $("#exact").val();
+            var temperature = $("#temperature").val();
+            var start = $("#start").val();
+            var post = $("#post").val();
+
+            // Validate the temperature
+            temperature = parseFloat(temperature);
+
+            if (isNaN(temperature) || temperature <= 0) {
+                $("#error_div").html(errorHTML("Temperature must be a number greater than 0."))
+                return
+            }
+
+            // Create the payload
+            var res = {
+                "project": "{{ project_name }}",
+                "seed": seed,
+                "iters": iters,
+                "exact": exact == "exact",
+                "temperature": temperature,
+                "same_start": start == "same",
+                "postprocess": post == "yes",
+            }
+
+            console.log(res);
+
+            $.ajax({
+                url: "/api/nntextgen",
+                contentType: "application/json",
+                method: "POST",
+                dataType: 'json',
+                data: JSON.stringify(res),
+                beforeSend: function() {
+                    $("#result").html("<p>Your phrase is loading, this can take a couple of seconds.</p>");
+                    $("#post_div").html("");
+                    $("#generate").prop("disabled", true);
+                },
+                success: function (result) {
+                    $("#generate").prop("disabled", false);
+                    console.log(result);
+                    if (result["statusCode"] == 200) {
+                        temp = result["body"];
+                        var res_div = "<h3>Results</h3><ol>";
+                        var post_div = "<h3>Postprocess Results</h3><table><thead>" +
+                            "<tr>" +
+                            "<th>Name</th>" +
+                            "<th>SequenceMatcher</th>" +
+                            "<th>Levenshtein</th>" +
+                            "<th>Damerau Levenshtein</th>" +
+                            "<th>Hamming</th>" +
+                            "<th>Jaro</th>" +
+                            "<th>Jaro Winkler</th>" +
+                            "<th>Subset</th>" +
+                            "</tr></thead><tbody>"
+
+                        temp.forEach(function(elem) {
+                            if (elem["isOriginal"]){
+                                res_div += "<li><strong>" + cap(elem["message"]) + "</strong></li>"
+                            } else {
+                                res_div += "<li>" + cap(elem["message"]) + "</li>"
+                            }
+
+                            if (elem.hasOwnProperty("hamming") && post == "yes" && elem["isOriginal"]) {
+                                post_div += "<tr>" +
+                                    "<td>" + cap(elem["message"]) + "</td>" +
+                                    "<td>" + cap(elem["sequence_matcher"]) + "</td>" +
+                                    "<td>" + cap(elem["levenshtein"]) + "</td>" +
+                                    "<td>" + cap(elem["damerau_levenshtein"]) + "</td>" +
+                                    "<td>" + cap(elem["hamming"]) + "</td>" +
+                                    "<td>" + cap(elem["jaro"]) + "</td>" +
+                                    "<td>" + cap(elem["jaro_winkler"]) + "</td>" +
+                                    "<td>" + elem["subsets"].map(cap).join(", ") + "</td>" +
+                                    "</tr>"
+                            }
+                        })
+                        res_div += "</ol>"
+                        post_div += "</tbody></table>"
+                        $("#result").html(res_div);
+                        if (post == "yes") {
+                            $("#post_div").html(post_div);
+                        }
+
+                    } else {
+                        $("#result").html("An error has occured");
+                    }
+                }
+            });
+        };
+    </script>
+
+</body>
+
+</html>

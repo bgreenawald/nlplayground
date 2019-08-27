@@ -17,7 +17,7 @@
     gtag('config', 'UA-146481414-1');
     </script>
 
-    <title>Madgab</title>
+    <title>Biblical Trump</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="/css/main.css" />
@@ -37,9 +37,12 @@
                 <section id="banner">
                     <div class="content">
 
-                        <h1>MadGab</h1>
+                        <h1>{{ title }}</h1>
                         <div>
-                            <p>Generates a "MadGabed" version of the input phrase. Basically, it changes the spelling of a word, spelling it based on how the word sounds.</p>
+
+                            <div id="description">
+                                {{ description }}
+                            </div>
 
                             <div class="row">
                                 <div class="col-8 col-12-small buffer-top">
@@ -49,9 +52,8 @@
                                     <button id="generate" onclick="callAwsLambdaFunction()">Generate</button>
                                 </div>
                             </div>
-
                             <div class="buffer-top">
-                                <div id="result" ></div>
+                                <div id="result"></div>
 
                                 <div id="error_div" class="alert" style="display: none">
                                     <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
@@ -71,22 +73,56 @@
 
                                 <div id="info" class="buffer-top" style="display: none;">
                                     <ol>
-                                        <li><strong>Difficulty: </strong>If set to "Easy", the return value will just change the spelling of each word in the input. If set to "Hard", the spaces will also be randomized in the return value.</li>
+                                        <li><strong>Memory: </strong>This option only take effect when more than one word is entered. If you enter a single word, this option does nothing. When using multiple words, it deals with what words should be given the most weight in the prediction of the next word. "Uniform" gives all words the same weight, "Decaying" gives more weight to more recent words, and "Random" give random weight. See the <a href="https://bgreenawald.github.io/blog/2018/markov-text-gen2.html">blog post</a> for this project for more details.</li>
                                     </ol>
                                 </div>
                             </div>
 
                             <div class="row option">
                                 <div class="col-2 col-12-small">
-                                    <strong>Difficulty</strong>
+                                    <strong>Memory</strong>
                                 </div>
                                 <div class="col-4 col-12-small">
-                                    <select name="difficulty" id="difficulty">
-                                        <option value="easy" selected>Easy</option>
-                                        <option value="hard">Hard</option>
+                                    <select name="memory" id="memory">
+                                        <option value="none" selected>No memory</option>
+                                        <option value="uniform">Uniform</option>
+                                        <option value="decaying">Decaying</option>
+                                        <option value="random">Random</option>
                                     </select>
                                 </div>
                             </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row option">
+                            {% if gallery is defined %}
+                            <div class="col-6 col-12-small">
+                                <h2>Gallery</h2>
+                                <div id="gallery_description">
+                                    {{ gallery_description }}
+                                </div>
+
+                                <button id="toggle_gallery" class="button small" onclick="toggleGallery()">Show the gallery</button>
+
+                                <div id="gallery" class="buffer-top" style="display: none;">
+                                    <ul>
+                                        {% for elem in gallery %}
+                                            <li>{{ elem }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            {% if data is defined %}
+                            <div class="col-6 col-12-small">
+                                <h2>Data</h2>
+                                <div id="data_div">
+                                    {{ data }}
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </section>
@@ -103,17 +139,15 @@
     <script src="/js/jquery.min.js"></script>
     <script src="/js/browser.min.js"></script>
     <script src="/js/breakpoints.min.js"></script>
-    <script src="/js/load.js"></script>
     <script src="/js/util.js"></script>
     <script src="/js/main.js"></script>
-
+    <script src="/js/load.js"></script>
     <script>
-
-
         function errorHTML(msg) {
             $("#error_div").show();
             $("#error_msg").html(msg);
         }
+
 
         function toggleInfo() {
             if ($("#info").css("display") == "none") {
@@ -125,27 +159,42 @@
             }
         }
 
-        // Back end functions
+        function toggleGallery() {
+            if ($("#gallery").css("display") == "none") {
+                $("#gallery").show();
+                $("#toggle_gallery").html("Hide the gallery");
+            } else {
+                $("#gallery").hide();
+                $("#toggle_gallery").html("Show the gallery");
+            }
+        }
+
+        // Back end logic functions
         function callAwsLambdaFunction() {
             var message = document.getElementById("message").value;
-            var difficulty = $("#difficulty").val();
+            var memory_val = document.getElementById("memory").value;
 
-            if (message.length < 1) {
-                errorHTML("Input should be at least 1 character");
-                return;
+            if (memory_val == "none") {
+                var memory = false;
+                var mechanism = "none";
+            } else {
+                var memory = true;
+                var mechanism = memory_val;
             }
 
             $.ajax({
-                url: "/api/madgab",
+                url: "/api/mixandmash",
                 contentType: "application/json",
                 method: "POST",
                 dataType: 'json',
                 data: JSON.stringify({
                     "message": message,
-                    "difficulty": difficulty
+                    "project": "{{ project_name }}",
+                    "memory": memory,
+                    "mechanism": mechanism
                 }),
                 beforeSend: function() {
-                    $("#result").html("<div class='row buffer-top'><div class='loadersmall'></div><h4>Your word is loading, this can take a couple of seconds.</h4></div>");
+                    $("#result").html("<div class='row buffer-top'><div class='loadersmall'></div><h4>Your phrase is loading, this can take a couple of seconds.</h4></div>");
                     $("#generate").prop("disabled", true);
                 },
                 success: function (result) {
@@ -164,7 +213,6 @@
                 }
             })
         };
-
     </script>
 
 </body>

@@ -1,4 +1,6 @@
-from flask import Blueprint, render_template
+import os
+
+from flask import Blueprint, render_template, Markup
 
 routes = Blueprint("routes", __name__, static_url_path='', static_folder='assets',)
 
@@ -30,24 +32,131 @@ def games(name):
 
 @routes.route('/mixmash/<name>')
 def mixmash(name):
-    name_map = {
-        "biblicaltrump": 'mixmash/biblicaltrump.html',
-    }
+    if name == "biblicaltrump":
+        data = {
+            "project_name": "biblical_trump",
+            "title": "Biblical Trump",
+            "description": Markup("""
+                <p>What would Trump sounds like if he tweeted during Biblical times?
+                This is not meant to be political, just having some fun. Read more about the project
+                <a href="https://bgreenawald.github.io/blog/2018/markov-text-gen.html">here.</a></p>
+            """),
+            "gallery_description": Markup("""
+                <p>See a gallery of some of my favorite biblical Trumpisms. Capitalization done manually.</p>
+            """),
+            "gallery": [
+                "Though shalt not go use Twitter Trump",
+                "I am the Ephraimites best which was great",
+                "The midst of seventy years agothis is mad sometimes referred to be long massive tax just named Eutychus being stubborn can call it",
+                "The original costume was Susan Berry",
+                "Who was a son of them thou shalt thou art not the word again despite Obamas terrible",
+                "Spectacular panoramic views of the ground",
+            ],
+            "data": Markup("""
+                <p>The data for this project was the Gutenburg Bible and an archive of <a href="https://github.com/mkearney/trumptweets">Trump's tweets</a></p>
+            """)
+        }
 
-    if name not in name_map:
-        return render_template("index.html")
+        return render_template("mixmash/mixmash.html", **data)
     else:
-        return render_template(name_map[name])
+        return render_template("index.html")
 
 
 @routes.route('/nntextgen/<name>')
 def textgen(name):
-    name_map = {
-        "boy_names": "nntextgen/boy_names.html",
-        "boy_names_data": "nntextgen/boy_names_data.html",
+    data = {
+        "boy_names": {
+            "project_name": "boy_names",
+            "title": "Boy Names",
+            "description": Markup("""
+                <p>Generates new boy names from a dataset of 1000 boy names.
+                Enter some starting characters in the box below to get the
+                algorithm started, or leave blank for a random start. Tweak
+                the options to your liking and click "Generate" when you're ready!</p>
+            """),
+            "iters": list(range(1, 11)),
+            "selected": 5,
+            "gallery_description": Markup("""
+                <p>Some of my favorite generated names.</p>
+            """),
+            "gallery": [
+                "AngeldeJesus",
+                "Babatunde",
+                "Curvin",
+                "Deforest",
+                "Gobel",
+                "Moishy",
+                "Purvis",
+                "Riggins",
+                "Ugo",
+                "Yer",
+            ],
+            "gallery_full": Markup("""
+                <a href="/nntextgen/gallery/boy_names">See the full gallery.</a>
+            """),
+            "data_description": Markup("""
+                <p>This model was trained on 1000 boy names from <a href="https://www.babble.com/pregnancy/1000-most-popular-boy-names/">here.</a></p>
+            """),
+            "data_full": Markup("""
+                <a href="/nntextgen/data/boy_names">See the full data.</a>
+            """)
+        }
+    }
+    if name in data:
+        return render_template("/nntextgen/nntextgen.html", **data[name])
+    else:
+        return render_template("index.html")
+
+@routes.route('/nntextgen/data/<name>')
+def data(name):
+    project_info = {
+        "boy_names": ("Boy Names", Markup("""
+            <p>This model was trained on 1000 boy names from
+            <a href="https://www.babble.com/pregnancy/1000-most-popular-boy-names/">here.</a></p>
+        """))
     }
 
-    if name not in name_map:
-        return render_template("index.html")
+    filename = f"data/nntextgen/{name}/data.txt"
+
+    if os.path.exists(filename) and name in project_info:
+        with open(filename, "r") as file:
+            data = file.read().split("\n")
+        ret = {
+            "title": project_info[name][0],
+            "data_description": project_info[name][1],
+            "data": data
+        }
     else:
-        return render_template(name_map[name])
+        ret = {
+            "title": "Error",
+            "data_description": "A dataset for the given project does not exist",
+            "data": []
+        }
+
+    return render_template("/nntextgen/data.html", **ret)
+
+
+@routes.route('/nntextgen/gallery/<name>')
+def gallery(name):
+    project_info = {
+        "boy_names": ("Boy Names", "9000 boy names generated from the model.")
+    }
+
+    filename = f"data/nntextgen/{name}/gallery.txt"
+
+    if os.path.exists(filename) and name in project_info:
+        with open(filename, "r") as file:
+            data = file.read().split("\n")
+        ret = {
+            "title": project_info[name][0],
+            "gallery_description": project_info[name][1],
+            "gallery": data
+        }
+    else:
+        ret = {
+            "title": "Error",
+            "data_description": "A gallery for the given project does not exist",
+            "data": []
+        }
+
+    return render_template("/nntextgen/gallery.html", **ret)
