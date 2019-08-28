@@ -17,7 +17,7 @@
     gtag('config', 'UA-146481414-1');
     </script>
 
-    <title>Data</title>
+    <title>NN Text Gen</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="/css/main.css" />
@@ -36,14 +36,9 @@
                 <!-- Content -->
                 <section id="banner">
                     <div class="content">
-                        <h2>{{ title }}</h2>
-                        <p>{{ data_description }}</p>
-
-                        <ol>
-                            {% for elem in data %}
-                            <li>{{ elem }}</li>
-                            {% endfor %}
-                        </ol>
+                        <h2>Nueral Network Text Generation</h2>
+                        <p>These set of character-level models using long short term memory (LSTM) neural networks to generate new text based on various input text data. For example, one model is trained on the 1000 most popular boy names and can output new boy names. This project is inspired by <a href="https://github.com/karpathy/char-rnn">char-rnn</a>, with implementation inspiration from <a href="https://machinelearningmastery.com/text-generation-lstm-recurrent-neural-networks-python-keras/">here</a>.
+                        </p>
                     </div>
                 </section>
             </div>

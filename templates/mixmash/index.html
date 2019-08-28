@@ -17,7 +17,7 @@
     gtag('config', 'UA-146481414-1');
     </script>
 
-    <title>Data</title>
+    <title>Mix and Mash</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="/css/main.css" />
@@ -36,14 +36,8 @@
                 <!-- Content -->
                 <section id="banner">
                     <div class="content">
-                        <h2>{{ title }}</h2>
-                        <p>{{ data_description }}</p>
-
-                        <ol>
-                            {% for elem in data %}
-                            <li>{{ elem }}</li>
-                            {% endfor %}
-                        </ol>
+                        <h2>Markov Mix and Mash</h2>
+                        <p>This is a set of word-level models inspired by the <a href="https://genesisofkanye.tumblr.com">Random Kanye project</a>. Using Markov chains, we can create models that combine the text from two or more sources and can output new text that mixes the sources. Because it uses Markov chains, the models do not have a good sense of memory, meaning the output text generally will make sense every couple of words, but will overall be gibberish. You can read more about the project <a href="https://bgreenawald.github.io/blog/2018/markov-text-gen.html">here</a>.</p>
                     </div>
                 </section>
             </div>

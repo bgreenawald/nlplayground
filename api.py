@@ -7,10 +7,10 @@ api = Blueprint("api", __name__,)
 
 API_KEY = "rZCF070Iie2PlGnpmXD2f7sa5Ys153Aj2x204KW9"
 
+
 # Generic api
 @api.route('/api/madgab', methods=["POST"])
 def madgab():
-    print(type(request.json))
     headers = {
         'Content-type': 'application/json',
         'x-api-key': API_KEY,
@@ -23,9 +23,9 @@ def madgab():
     print(r.json())
     return jsonify({"statusCode": r.status_code, "body": r.json()})
 
+
 @api.route('/api/mixandmash', methods=["POST"])
 def mix_and_mash():
-    print(type(request.json))
     headers = {
         'Content-type': 'application/json',
         'x-api-key': API_KEY,
@@ -38,9 +38,9 @@ def mix_and_mash():
     print(r.json())
     return jsonify({"statusCode": r.status_code, "body": r.json()})
 
+
 @api.route('/api/nntextgen', methods=["POST"])
 def nn_text_gen():
-
     headers = {
         'Content-type': 'application/json',
         'x-api-key': API_KEY,

@@ -10,13 +10,16 @@ routes = Blueprint("routes", __name__, static_url_path='', static_folder='assets
 def index():
     return render_template("index.html")
 
+
 @routes.route('/sidebar')
 def sidebar():
     return render_template('sidebar.html')
 
+
 @routes.route('/header')
 def header():
     return render_template('header.html')
+
 
 @routes.route('/games/<name>')
 def games(name):
@@ -62,6 +65,11 @@ def mixmash(name):
         return render_template("index.html")
 
 
+@routes.route('/mixmash')
+def mixmash_index():
+    return render_template("/mixmash/index.html")
+
+
 @routes.route('/nntextgen/<name>')
 def textgen(name):
     data = {
@@ -100,6 +108,71 @@ def textgen(name):
             "data_full": Markup("""
                 <a href="/nntextgen/data/boy_names">See the full data.</a>
             """)
+        },
+        "girl_names": {
+            "project_name": "girl_names",
+            "title": "Girl Names",
+            "description": Markup("""
+                <p>Generates new girls names from a dataset of 1000 girl names.
+                Enter some starting characters in the box below to get the
+                algorithm started, or leave blank for a random start. Tweak
+                the options to your liking and click "Generate" when you're ready!</p>
+            """),
+            "iters": list(range(1, 11)),
+            "selected": 5,
+            "gallery_description": Markup("""
+                <p>Some of my favorite generated names.</p>
+            """),
+            "gallery": [
+                "Blonnie",
+                "Borghild",
+                "Jamiracle",
+                "Pasqualina",
+                "Pearly",
+                "Rut",
+                "Sharde",
+                "Shaquasia",
+                "Unnamed",
+                "Vanellope",
+            ],
+            "gallery_full": Markup("""
+                <a href="/nntextgen/gallery/girl_names">See the full gallery.</a>
+            """),
+            "data_description": Markup("""
+                <p>This model was trained on 1000 girl names from <a href="https://www.babble.com/pregnancy/1000-most-popular-girl-names/">here.</a></p>
+            """),
+            "data_full": Markup("""
+                <a href="/nntextgen/data/girl_names">See the full data.</a>
+            """)
+        },
+        "stripper_names": {
+            "project_name": "stripper_names",
+            "title": "Stripper Names",
+            "description": Markup("""
+                <p>Generates new stripper names from a dataset of over
+                8000 adult film actresses.
+                Enter some starting characters in the box below to get the
+                algorithm started, or leave blank for a random start. Tweak
+                the options to your liking and click "Generate" when you're ready!</p>
+            """),
+            "iters": list(range(1, 6)),
+            "selected": 3,
+            "gallery_description": Markup("""
+                <p>Some of my favorite generated names.</p>
+            """),
+            "gallery": [
+                "Casolyn Fart",
+            ],
+            "gallery_full": Markup("""
+                <a href="/nntextgen/gallery/stripper_names">See the full gallery.</a>
+            """),
+            "data_description": Markup("""
+                <p>This model was trained over 8000 adult film actress names scraped from various
+                sources.</p>
+            """),
+            "data_full": Markup("""
+                <a href="/nntextgen/data/stripper_names">See the full data.</a>
+            """)
         }
     }
     if name in data:
@@ -107,13 +180,26 @@ def textgen(name):
     else:
         return render_template("index.html")
 
+
+@routes.route('/nntextgen')
+def nntextgen_index():
+    return render_template("/nntextgen/index.html")
+
+
 @routes.route('/nntextgen/data/<name>')
 def data(name):
     project_info = {
         "boy_names": ("Boy Names", Markup("""
             <p>This model was trained on 1000 boy names from
             <a href="https://www.babble.com/pregnancy/1000-most-popular-boy-names/">here.</a></p>
-        """))
+        """)),
+        "girl_names": ("Girl Names", Markup("""
+            <p>This model was trained on 1000 girl names from
+            <a href="https://www.babble.com/pregnancy/1000-most-popular-girl-names/">here.</a></p>
+        """)),
+        "stripper_names": ("Stripper Names", Markup("""
+            <p>This model was trained on 8000 adult film actress names from a variety of sources.</p>
+        """)),
     }
 
     filename = f"data/nntextgen/{name}/data.txt"
@@ -139,7 +225,9 @@ def data(name):
 @routes.route('/nntextgen/gallery/<name>')
 def gallery(name):
     project_info = {
-        "boy_names": ("Boy Names", "9000 boy names generated from the model.")
+        "boy_names": ("Boy Names", "9000 boy names generated from the model."),
+        "girl_names": ("Girl Names", "9000 girl names generated from the model."),
+        "stripper_names": ("Stripper Names", "Over 1000 stripper names generated from the model."),
     }
 
     filename = f"data/nntextgen/{name}/gallery.txt"
