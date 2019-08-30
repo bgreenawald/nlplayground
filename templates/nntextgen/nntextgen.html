@@ -294,7 +294,7 @@
                     if (result["statusCode"] == 200) {
                         temp = result["body"];
                         var res_div = "<h3>Results</h3><ol>";
-                        var post_div = "<h3>Postprocess Results</h3><a href='https://jellyfish.readthedocs.io/en/latest/comparison.html'>Read more about the postprocess metrics.</a><table><thead>" +
+                        var post_div = "<h3>Postprocess Results</h3><a href='https://jellyfish.readthedocs.io/en/latest/comparison.html'>Read more about the postprocess metrics.</a><br><table><thead>" +
                             "<tr>" +
                             "<th>Name</th>" +
                             "<th>SequenceMatcher</th>" +
@@ -334,7 +334,7 @@
                         }
 
                     } else {
-                        $("#result").html("An error has occured");
+                        $("#result").html("An error has occured. Refresh the page and try again. If the problem persists, please send an email to nlplayground@gmail.com describing the issue.");
                     }
                 }
             });
