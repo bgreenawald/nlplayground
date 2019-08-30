@@ -52,8 +52,8 @@
                                     <button id="generate" onclick="callAwsLambdaFunction()">Generate</button>
                                 </div>
                             </div>
-                            <div class="buffer-top">
-                                <div id="result"></div>
+                            <div>
+                                <div id="result"  class="buffer-top buffer-left"></div>
 
                                 <div id="error_div" class="alert" style="display: none">
                                     <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
@@ -194,14 +194,15 @@
                     "mechanism": mechanism
                 }),
                 beforeSend: function() {
-                    $("#result").html("<div class='row buffer-top'><div class='loadersmall'></div><h4>Your phrase is loading, this can take a couple of seconds.</h4></div>");
+                    $("#result").html("<div class='row'><div class='loadersmall'></div><h4>Your phrase is loading, this can take a couple of seconds.</h4></div>");
                     $("#generate").prop("disabled", true);
+                    $("#error_div").hide();
                 },
                 success: function (result) {
                     $("#generate").prop("disabled", false);
                     if (result["statusCode"] == 200) {
                         $("#error_div").hide();
-                        $("#result").html("<div class='row buffer-top'><h4>" + result["body"] + "</h4></div>");
+                        $("#result").html("<div class='row buffer-top buffer-left'><h4>" + result["body"] + "</h4></div>");
                     } else {
                         $("#result").html("");
                         if (result.hasOwnProperty("body")){

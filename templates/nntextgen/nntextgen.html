@@ -52,8 +52,8 @@
                                 </div>
                             </div>
 
-                            <div id="results_div" style="margin-top: 25px">
-                                <div id="result"></div>
+                            <div id="results_div">
+                                <div id="result" class="buffer-top buffer-left" ></div>
                                 <div id="post_div"></div>
                             </div>
 
@@ -276,8 +276,6 @@
                 "postprocess": post == "yes",
             }
 
-            console.log(res);
-
             $.ajax({
                 url: "/api/nntextgen",
                 contentType: "application/json",
@@ -285,8 +283,9 @@
                 dataType: 'json',
                 data: JSON.stringify(res),
                 beforeSend: function() {
-                    $("#result").html("<p>Your phrase is loading, this can take a couple of seconds.</p>");
+                    $("#result").html("<div class='row'><div class='loadersmall'></div><h4>Your word is loading, since we're dealing with nueral networks, this can take around a minute.</h4></div>");
                     $("#post_div").html("");
+                    $("#error_div").hide();
                     $("#generate").prop("disabled", true);
                 },
                 success: function (result) {
@@ -295,7 +294,7 @@
                     if (result["statusCode"] == 200) {
                         temp = result["body"];
                         var res_div = "<h3>Results</h3><ol>";
-                        var post_div = "<h3>Postprocess Results</h3><table><thead>" +
+                        var post_div = "<h3>Postprocess Results</h3><a href='https://jellyfish.readthedocs.io/en/latest/comparison.html'>Read more about the postprocess metrics.</a><table><thead>" +
                             "<tr>" +
                             "<th>Name</th>" +
                             "<th>SequenceMatcher</th>" +

@@ -315,6 +315,10 @@ hr.major {
   margin-top: 15px;
 }
 
+.buffer-left {
+  margin-left: 25px;
+}
+
 .loadersmall {
   border: 1px solid #f3f3f3;
   -webkit-animation: spin 1s linear infinite;
