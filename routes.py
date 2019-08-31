@@ -1,6 +1,6 @@
 import os
 
-from flask import Blueprint, render_template, Markup
+from quart import Blueprint, render_template, Markup
 
 routes = Blueprint("routes", __name__, static_url_path='', static_folder='assets',)
 
