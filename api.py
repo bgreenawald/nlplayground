@@ -3,7 +3,6 @@ import json
 import aiohttp
 import asyncio
 import async_timeout
-import requests
 from quart import Blueprint, jsonify, render_template, request
 
 api = Blueprint("api", __name__,)
