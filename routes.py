@@ -144,35 +144,6 @@ def textgen(name):
             "data_full": Markup("""
                 <a href="/nntextgen/data/girl_names">See the full data.</a>
             """)
-        },
-        "stripper_names": {
-            "project_name": "stripper_names",
-            "title": "Stripper Names",
-            "description": Markup("""
-                <p>Generates new stripper names from a dataset of over
-                8000 adult film actresses.
-                Enter some starting characters in the box below to get the
-                algorithm started, or leave blank for a random start. Tweak
-                the options to your liking and click "Generate" when you're ready!</p>
-            """),
-            "iters": list(range(1, 6)),
-            "selected": 3,
-            "gallery_description": Markup("""
-                <p>Some of my favorite generated names.</p>
-            """),
-            "gallery": [
-                "Casolyn Fart",
-            ],
-            "gallery_full": Markup("""
-                <a href="/nntextgen/gallery/stripper_names">See the full gallery.</a>
-            """),
-            "data_description": Markup("""
-                <p>This model was trained over 8000 adult film actress names scraped from various
-                sources.</p>
-            """),
-            "data_full": Markup("""
-                <a href="/nntextgen/data/stripper_names">See the full data.</a>
-            """)
         }
     }
     if name in data:
@@ -227,7 +198,6 @@ def gallery(name):
     project_info = {
         "boy_names": ("Boy Names", "9000 boy names generated from the model."),
         "girl_names": ("Girl Names", "9000 girl names generated from the model."),
-        "stripper_names": ("Stripper Names", "Over 1000 stripper names generated from the model."),
     }
 
     filename = f"data/nntextgen/{name}/gallery.txt"
