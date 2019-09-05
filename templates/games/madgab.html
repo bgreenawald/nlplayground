@@ -109,7 +109,7 @@
 
     <script>
 
-
+        // Toggle functions
         function errorHTML(msg) {
             $("#error_div").show();
             $("#error_msg").html(msg);
@@ -124,6 +124,14 @@
                 $("#toggle_info").html("Read about options");
             }
         }
+
+        // Key read function
+        $("#message").keyup(function(event) {
+            if (event.keyCode === 13) {
+                $("#generate").click();
+            }
+        });
+
 
         // Back end functions
         function callAwsLambdaFunction() {
@@ -145,12 +153,19 @@
                     "difficulty": difficulty
                 }),
                 beforeSend: function() {
+                    // Update status for the user
                     $("#result").html("<div class='row'><div class='loadersmall'></div><h4>Your word is loading, this can take a couple of seconds.</h4></div>");
+
+                    // Disable input and clear old output
                     $("#generate").prop("disabled", true);
+                    $("#message").prop("disabled", true);
                     $("#error_div").hide();
                 },
                 success: function (result) {
+                    // Re-enable user input
                     $("#generate").prop("disabled", false);
+                    $("#message").prop("disabled", false);
+
                     if (result["statusCode"] == 200) {
                         $("#error_div").hide();
                         $("#result").html("<div class='row buffer-top'><h4>" + result["body"] + "</h4></div>");

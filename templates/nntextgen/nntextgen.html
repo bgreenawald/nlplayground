@@ -214,6 +214,7 @@
             return string.charAt(0).toUpperCase() + string.slice(1);
         }
 
+        // Toggle functions
         function toggleInfo() {
             if ($("#info").css("display") == "none") {
                 $("#info").show();
@@ -247,6 +248,13 @@
             $("#error_div").show();
             $("#error_msg").html(msg);
         }
+
+        // Key read function
+        $("#message").keyup(function(event) {
+            if (event.keyCode === 13) {
+                $("#generate").click();
+            }
+        });
 
         // Back end logic functions
         function callAwsLambdaFunction() {
@@ -283,14 +291,19 @@
                 dataType: 'json',
                 data: JSON.stringify(res),
                 beforeSend: function() {
+                    // Update status for the user
                     $("#result").html("<div class='row'><div class='loadersmall'></div><h4>Your word is loading, since we're dealing with nueral networks, this can take around a minute.</h4></div>");
+
+                    // Disable input and clear old output
                     $("#post_div").html("");
                     $("#error_div").hide();
                     $("#generate").prop("disabled", true);
+                    $("#message").prop("disabled", true);
                 },
                 success: function (result) {
+                    // Re-enable user input
                     $("#generate").prop("disabled", false);
-                    console.log(result);
+                    $("#message").prop("disabled", false);
                     if (result["statusCode"] == 200) {
                         temp = result["body"];
                         var res_div = "<h3>Results</h3><ol>";
