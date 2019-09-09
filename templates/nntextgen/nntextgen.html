@@ -17,7 +17,7 @@
     gtag('config', 'UA-146481414-1');
     </script>
 
-    <title>Boy Names</title>
+    <title>NN Text Gen</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="/css/main.css" />
@@ -54,6 +54,7 @@
 
                             <div id="results_div">
                                 <div id="result" class="buffer-top buffer-left" ></div>
+                                <br>
                                 <div id="post_div"></div>
                             </div>
 
@@ -292,7 +293,7 @@
                 data: JSON.stringify(res),
                 beforeSend: function() {
                     // Update status for the user
-                    $("#result").html("<div class='row'><div class='loadersmall'></div><h4>Your word is loading, since we're dealing with nueral networks, this can take around a minute.</h4></div>");
+                    $("#result").html("<div class='row'><div class='loadersmall'></div><h4>Your word is loading, since we're dealing with nueral networks, this can take up to a minute, but should only take a couple of seconds.</h4></div>");
 
                     // Disable input and clear old output
                     $("#post_div").html("");
@@ -304,10 +305,12 @@
                     // Re-enable user input
                     $("#generate").prop("disabled", false);
                     $("#message").prop("disabled", false);
+                    console.log(result);
                     if (result["statusCode"] == 200) {
                         temp = result["body"];
+                        console.log(temp);
                         var res_div = "<h3>Results</h3><ol>";
-                        var post_div = "<h3>Postprocess Results</h3><a href='https://jellyfish.readthedocs.io/en/latest/comparison.html'>Read more about the postprocess metrics.</a><br><table><thead>" +
+                        var post_div = "<h3>Postprocess Results</h3><a href='https://jellyfish.readthedocs.io/en/latest/comparison.html'>Read more about the postprocess metrics.</a><br><br><table><thead>" +
                             "<tr>" +
                             "<th>Name</th>" +
                             "<th>SequenceMatcher</th>" +
@@ -339,7 +342,7 @@
                                     "</tr>"
                             }
                         })
-                        res_div += "</ol>"
+                        res_div += "</ol><span>A <strong>bold</strong> entry above means that result is original, not found in the original data.</span>"
                         post_div += "</tbody></table>"
                         $("#result").html(res_div);
                         if (post == "yes") {
@@ -347,7 +350,15 @@
                         }
 
                     } else {
-                        $("#result").html("An error has occured. Refresh the page and try again. If the problem persists, please send an email to nlplayground@gmail.com describing the issue.");
+                        var error_str = "An error has occured. Refresh the page and try again. If the problem persists, please send an email to nlplayground@gmail.com describing the issue. ";
+
+                        if (typeof result == "object") {
+                            error_str += "Error payload: " + result.stringify();
+                        } else if(typeof result == "string") {
+                            error_str += "Error payload: " + result;
+                        }
+
+                        $("#result").html(error_str);
                     }
                 }
             });

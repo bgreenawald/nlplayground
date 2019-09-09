@@ -220,12 +220,15 @@
                         $("#error_div").hide();
                         $("#result").html("<div class='row buffer-top buffer-left'><h4>" + result["body"] + "</h4></div>");
                     } else {
-                        $("#result").html("");
-                        if (result.hasOwnProperty("body")){
-                            errorHTML(result["body"]);
-                        } else {
-                            errorHTML("An error has occured")
+                        var error_str = "An error has occured. Refresh the page and try again. If the problem persists, please send an email to nlplayground@gmail.com describing the issue. ";
+
+                        if (typeof result == "object") {
+                            error_str += "Error payload: " + result.stringify();
+                        } else if(typeof result == "string") {
+                            error_str += "Error payload: " + result;
                         }
+
+                        $("#result").html(error_str);
                     }
                 }
             })

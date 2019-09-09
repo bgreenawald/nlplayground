@@ -144,7 +144,99 @@ def textgen(name):
             "data_full": Markup("""
                 <a href="/nntextgen/data/girl_names">See the full data.</a>
             """)
-        }
+        },
+        "stripper_names": {
+            "project_name": "stripper_names",
+            "title": "Stripper Names",
+            "description": Markup("""
+                <p>Generates new stripper names from a dataset of over
+                8000 adult film actresses.
+                Enter some starting characters in the box below to get the
+                algorithm started, or leave blank for a random start. Tweak
+                the options to your liking and click "Generate" when you're ready!</p>
+            """),
+            "iters": list(range(1, 6)),
+            "selected": 3,
+            "gallery_description": Markup("""
+                <p>Some of my favorite generated names.</p>
+            """),
+            "gallery": [
+                "Casolyn Fart",
+                "Soxy Black",
+            ],
+            "gallery_full": Markup("""
+                <a href="/nntextgen/gallery/stripper_names">See the full gallery.</a>
+            """),
+            "data_description": Markup("""
+                <p>This model was trained over 8000 adult film actress names scraped from various
+                sources.</p>
+            """),
+            "data_full": Markup("""
+                <a href="/nntextgen/data/stripper_names">See the full data.</a>
+            """)
+        },
+        "pokemon_names": {
+            "project_name": "pokemon_names",
+            "title": "Pokemon Names",
+            "description": Markup("""
+                <p>Over 800 Pokemon not enough? Generate some new ones!
+                Enter some starting characters in the box below to get the
+                algorithm started, or leave blank for a random start. Tweak
+                the options to your liking and click "Generate" when you're ready!</p>
+            """),
+            "iters": list(range(1, 11)),
+            "selected": 5,
+            "gallery_description": Markup("""
+                <p>Some of my favorite generated names.</p>
+            """),
+            "gallery": [
+                "Eoaoeo",
+                "Gooohu",
+                "Vesaggy",
+            ],
+            "gallery_full": Markup("""
+                <a href="/nntextgen/gallery/pokemon_names">See the full gallery.</a>
+            """),
+            "data_description": Markup("""
+                <p>This model was train on all Pokemon names (pre Sword and Shield) from
+                <a href="https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_name">here.</a></p>
+            """),
+            "data_full": Markup("""
+                <a href="/nntextgen/data/pokemon_names">See the full data.</a>
+            """)
+        },
+        "dinosaur_names": {
+            "project_name": "dinosaur_names",
+            "title": "Dinosaur Names",
+            "description": Markup("""
+                <p>Need some inspiration for you latest prehistoric archaeological
+                discover? Generate yourself some new dinosaurs names!
+                Enter some starting characters in the box below to get the
+                algorithm started, or leave blank for a random start. Tweak
+                the options to your liking and click "Generate" when you're ready!</p>
+            """),
+            "iters": list(range(1, 6)),
+            "selected": 3,
+            "gallery_description": Markup("""
+                <p>Some of my favorite generated names.</p>
+            """),
+            "gallery": [
+                "Dampylodon",
+                "Lemopus",
+                "Shamag",
+            ],
+            "gallery_full": Markup("""
+                <a href="/nntextgen/gallery/dinosaur_names">See the full gallery.</a>
+            """),
+            "data_description": Markup("""
+                <p>This model was trained on over 1500 dinosaur names from
+                <a href="https://en.wikipedia.org/wiki/List_of_dinosaur_genera">here.</a></p>
+            """),
+            "data_full": Markup("""
+                <a href="/nntextgen/data/dinosaur_names">See the full data.</a>
+            """)
+        },
+
     }
     if name in data:
         return render_template("/nntextgen/nntextgen.html", **data[name])
@@ -170,6 +262,14 @@ def data(name):
         """)),
         "stripper_names": ("Stripper Names", Markup("""
             <p>This model was trained on 8000 adult film actress names from a variety of sources.</p>
+        """)),
+        "pokemon_names": ("Pokemon Names", Markup("""
+            <p>This model was train on all Pokemon names (pre Sword and Shield) from
+            <a href="https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_name">here.</a></p>
+        """)),
+        "dinosaur_names": ("Dinosaur Names", Markup("""
+            <p>This model was trained on over 1500 dinosaur names from
+            <a href="https://en.wikipedia.org/wiki/List_of_dinosaur_genera">here.</a></p>
         """)),
     }
 
@@ -198,6 +298,8 @@ def gallery(name):
     project_info = {
         "boy_names": ("Boy Names", "9000 boy names generated from the model."),
         "girl_names": ("Girl Names", "9000 girl names generated from the model."),
+        "stripper_names": ("Stripper Names", "Over 1000 stripper names generated from the model."),
+        "pokemon_names": ("Pokemon Names", "Over 500 Pokemon names generated from the model."),
     }
 
     filename = f"data/nntextgen/{name}/gallery.txt"

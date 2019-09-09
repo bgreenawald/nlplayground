@@ -7,17 +7,16 @@ from quart import Blueprint, jsonify, render_template, request
 
 api = Blueprint("api", __name__,)
 
-API_KEY = "rZCF070Iie2PlGnpmXD2f7sa5Ys153Aj2x204KW9"
-HEADERS = {
-    'Content-type': 'application/json',
-    'x-api-key': API_KEY,
-}
-
 BASE_URL = 'https://e5atpy4c73.execute-api.us-east-1.amazonaws.com/Prod'
 
 # Generic api
 @api.route('/api/madgab', methods=["POST"])
 async def madgab():
+    API_KEY = "ZHLM6JdUyQaP1P2cpG1g54IhGk6Xf6Cv9vnIOLmL"
+    HEADERS = {
+        'Content-type': 'application/json',
+        'x-api-key': API_KEY,
+    }
     resource_path = 'MadGab'
     url = '{}/{}'.format(BASE_URL, resource_path)
     data = await request.json
@@ -30,6 +29,11 @@ async def madgab():
 
 @api.route('/api/mixandmash', methods=["POST"])
 async def mix_and_mash():
+    API_KEY = "rZCF070Iie2PlGnpmXD2f7sa5Ys153Aj2x204KW9"
+    HEADERS = {
+        'Content-type': 'application/json',
+        'x-api-key': API_KEY,
+    }
     resource_path = 'mix-and-mash'
     url = '{}/{}'.format(BASE_URL, resource_path)
     data = await request.json
@@ -42,14 +46,31 @@ async def mix_and_mash():
 
 @api.route('/api/nntextgen', methods=["POST"])
 async def nn_text_gen():
+    api_map = {
+        "boy_names": "ixczTTsgoAhhBxnlu81Z7Z9X3KdXVXw4xjBh3j1a",
+        "girl_names": "z1mqdfws2q6LeXu3jb42E1dG2eEaaNW41ZwgUpUX",
+        "pokemon_names": "VtHCLH7esP3puWP8dluVZ8MaPWD4pjdP79ozmni0",
+        "dinosaur_names": "ftvixoys3B8TmBey6fwsp2qdJDd9C0Vq8X9f3iOB",
+        "stripper_names": "UCYMsD6ZSt5HWpRDbECJiSAKaqbaPQ43ucWIgYU1",
+    }
+
     data = await request.json
+
+    try:
+        API_KEY = api_map[data["project"]]
+        HEADERS = {
+            'Content-type': 'application/json',
+            'x-api-key': API_KEY,
+        }
+    except KeyError as e:
+        return jsonify({"statusCode": 400, "body": str(e)})
 
     try:
         payload = validate(data)
     except Exception as e:
         return jsonify({"statusCode": 400, "body": str(e)})
 
-    resource_path = 'nn-text-gen'
+    resource_path = 'nn_' + data["project"]
     url = '{}/{}'.format(BASE_URL, resource_path)
     async with aiohttp.ClientSession() as session, async_timeout.timeout(30):
         async with session.post(url, headers=HEADERS, data=json.dumps(payload)) as response:
