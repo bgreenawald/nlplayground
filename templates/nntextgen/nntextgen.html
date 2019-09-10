@@ -305,10 +305,8 @@
                     // Re-enable user input
                     $("#generate").prop("disabled", false);
                     $("#message").prop("disabled", false);
-                    console.log(result);
                     if (result["statusCode"] == 200) {
                         temp = result["body"];
-                        console.log(temp);
                         var res_div = "<h3>Results</h3><ol>";
                         var post_div = "<h3>Postprocess Results</h3><a href='https://jellyfish.readthedocs.io/en/latest/comparison.html'>Read more about the postprocess metrics.</a><br><br><table><thead>" +
                             "<tr>" +
@@ -360,7 +358,15 @@
 
                         $("#result").html(error_str);
                     }
-                }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    var error_msg = `An error has occured. Error status: ${textStatus} ` +
+                        `Error thrown: ${errorThrown}. Please refresh the page and if the ` +
+                        `problem continues, contact bgreenawald@gmail.com.`
+
+                    $("#result").html(error_msg);
+                },
+                timeout: 30000,
             });
         };
     </script>

@@ -180,7 +180,15 @@
 
                         $("#result").html(error_str);
                     }
-                }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    var error_msg = `An error has occured. Error status: ${textStatus} ` +
+                        `Error thrown: ${errorThrown}. Please refresh the page and if the ` +
+                        `problem continues, contact bgreenawald@gmail.com.`
+
+                    $("#result").html(error_msg);
+                },
+                timeout: 30000,
             })
         };
 
