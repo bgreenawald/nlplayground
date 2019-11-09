@@ -80,14 +80,8 @@
             $sidebar.removeClass('inactive');
         });
 
-        // Hack: Workaround for Chrome/Android scrollbar position bug.
-        if (browser.os == 'android' &&
-            browser.name == 'chrome')
-            $('<style>#sidebar .inner::-webkit-scrollbar { display: none; }</style>')
-            .appendTo($head);
-
         // Toggle.
-        $('<a href="#sidebar" class="toggle">Toggle</a>')
+        $('<a href="#sidebar" class="toggle"></a>')
             .appendTo($sidebar)
             .on('click', function (event) {
 
