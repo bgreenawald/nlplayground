@@ -1,3 +1,5 @@
+"""The main runner function."""
+
 from quart import Quart
 
 from api import api

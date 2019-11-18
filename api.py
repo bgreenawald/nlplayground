@@ -1,3 +1,5 @@
+"""The AWS Lambda calls for the application."""
+
 import json
 from typing import Any, Dict
 
@@ -7,10 +9,10 @@ from quart import Blueprint, jsonify, request, Response
 
 api = Blueprint("api", __name__,)
 
-BASE_URL = 'https://e5atpy4c73.execute-api.us-east-1.amazonaws.com/Prod'
+BASE_URL = "https://e5atpy4c73.execute-api.us-east-1.amazonaws.com/Prod"
 
 # Generic api
-@api.route('/api/madgab', methods=["POST"])
+@api.route("/api/madgab", methods=["POST"])
 async def madgab() -> Response:
     """
     Call the Madgab Lambda function.
@@ -20,20 +22,22 @@ async def madgab() -> Response:
     """
     API_KEY = "ZHLM6JdUyQaP1P2cpG1g54IhGk6Xf6Cv9vnIOLmL"
     HEADERS = {
-        'Content-type': 'application/json',
-        'x-api-key': API_KEY,
+        "Content-type": "application/json",
+        "x-api-key": API_KEY,
     }
-    resource_path = 'MadGab'
-    url = '{}/{}'.format(BASE_URL, resource_path)
+    resource_path = "MadGab"
+    url = "{}/{}".format(BASE_URL, resource_path)
     data = await request.json
     async with aiohttp.ClientSession() as session, async_timeout.timeout(30):
-        async with session.post(url, headers=HEADERS, data=json.dumps(data)) as response:
+        async with session.post(
+            url, headers=HEADERS, data=json.dumps(data)
+        ) as response:
             body = await response.json()
             status_code = response.status
     return jsonify({"statusCode": status_code, "body": body})
 
 
-@api.route('/api/mixandmash', methods=["POST"])
+@api.route("/api/mixandmash", methods=["POST"])
 async def mix_and_mash() -> Response:
     """
     Call the Mix and Mash Lambda function.
@@ -43,20 +47,22 @@ async def mix_and_mash() -> Response:
     """
     API_KEY = "rZCF070Iie2PlGnpmXD2f7sa5Ys153Aj2x204KW9"
     HEADERS = {
-        'Content-type': 'application/json',
-        'x-api-key': API_KEY,
+        "Content-type": "application/json",
+        "x-api-key": API_KEY,
     }
-    resource_path = 'mix-and-mash'
-    url = '{}/{}'.format(BASE_URL, resource_path)
+    resource_path = "mix-and-mash"
+    url = "{}/{}".format(BASE_URL, resource_path)
     data = await request.json
     async with aiohttp.ClientSession() as session, async_timeout.timeout(30):
-        async with session.post(url, headers=HEADERS, data=json.dumps(data)) as response:
+        async with session.post(
+            url, headers=HEADERS, data=json.dumps(data)
+        ) as response:
             body = await response.json()
             status_code = response.status
     return jsonify({"statusCode": status_code, "body": body})
 
 
-@api.route('/api/nntextgen', methods=["POST"])
+@api.route("/api/nntextgen", methods=["POST"])
 async def nn_text_gen() -> Response:
     """
     Call the NN Text Gen Lambda function.
@@ -77,8 +83,8 @@ async def nn_text_gen() -> Response:
     try:
         API_KEY = api_map[data["project"]]
         HEADERS = {
-            'Content-type': 'application/json',
-            'x-api-key': API_KEY,
+            "Content-type": "application/json",
+            "x-api-key": API_KEY,
         }
     except KeyError as e:
         return jsonify({"statusCode": 400, "body": str(e)})
@@ -88,10 +94,12 @@ async def nn_text_gen() -> Response:
     except Exception as e:
         return jsonify({"statusCode": 400, "body": str(e)})
 
-    resource_path = 'nn_' + data["project"]
-    url = '{}/{}'.format(BASE_URL, resource_path)
+    resource_path = "nn_" + data["project"]
+    url = "{}/{}".format(BASE_URL, resource_path)
     async with aiohttp.ClientSession() as session, async_timeout.timeout(30):
-        async with session.post(url, headers=HEADERS, data=json.dumps(payload)) as response:
+        async with session.post(
+            url, headers=HEADERS, data=json.dumps(payload)
+        ) as response:
             body = await response.json()
             status_code = response.status
     return jsonify({"statusCode": status_code, "body": body})

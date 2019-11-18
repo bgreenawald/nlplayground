@@ -1,12 +1,14 @@
+"""The navigation routes for the application."""
+
 import os
 
 from quart import Blueprint, render_template, Markup
 
-routes = Blueprint("routes", __name__, static_url_path='', static_folder='assets',)
+routes = Blueprint("routes", __name__, static_url_path="", static_folder="assets",)
 
 
 # Generic routes
-@routes.route('/')
+@routes.route("/")
 def index() -> str:
     """
     The home page route.
@@ -17,7 +19,7 @@ def index() -> str:
     return render_template("index.html")
 
 
-@routes.route('/sidebar')
+@routes.route("/sidebar")
 def sidebar() -> str:
     """
     Returns the sidebar. Used to keep one version of the sidebar globally.
@@ -25,10 +27,10 @@ def sidebar() -> str:
     Returns:
         str: The sidebar template.
     """
-    return render_template('sidebar.html')
+    return render_template("sidebar.html")
 
 
-@routes.route('/header')
+@routes.route("/header")
 def header() -> str:
     """
     Returns the header. Used to keep one version of the header globally.
@@ -36,10 +38,10 @@ def header() -> str:
     Returns:
         str: The header template.k
     """
-    return render_template('header.html')
+    return render_template("header.html")
 
 
-@routes.route('/games/<name>')
+@routes.route("/games/<name>")
 def games(name: str) -> str:
     """
     The games route. Return the correct game page based on the route.
@@ -52,7 +54,7 @@ def games(name: str) -> str:
             does not exist.
     """
     name_map = {
-        "madgab": 'games/madgab.html',
+        "madgab": "games/madgab.html",
     }
 
     if name not in name_map:
@@ -61,7 +63,7 @@ def games(name: str) -> str:
         return render_template(name_map[name])
 
 
-@routes.route('/mixmash/<name>')
+@routes.route("/mixmash/<name>")
 def mixmash(name: str) -> str:
     """
     The mix and mash route. Returns the correct mix and mash project based on the
@@ -109,7 +111,7 @@ def mixmash(name: str) -> str:
         return render_template("index.html")
 
 
-@routes.route('/mixmash')
+@routes.route("/mixmash")
 def mixmash_index() -> str:
     """
     Return the mix and mash homepage.
@@ -120,7 +122,7 @@ def mixmash_index() -> str:
     return render_template("/mixmash/index.html")
 
 
-@routes.route('/nntextgen/<name>')
+@routes.route("/nntextgen/<name>")
 def textgen(name: str) -> str:
     """
     The NN text gen route. Returns the correct nn text gen project based on the
@@ -311,7 +313,7 @@ def textgen(name: str) -> str:
         return render_template("index.html")
 
 
-@routes.route('/nntextgen')
+@routes.route("/nntextgen")
 def nntextgen_index() -> str:
     """
     The home page for the nn text gen project.
@@ -322,7 +324,7 @@ def nntextgen_index() -> str:
     return render_template("/nntextgen/index.html")
 
 
-@routes.route('/nntextgen/data/<name>')
+@routes.route("/nntextgen/data/<name>")
 def data(name: str) -> str:
     """
     Data endpoint for nn text gen projects.
@@ -378,7 +380,7 @@ def data(name: str) -> str:
     return render_template("/nntextgen/data.html", **ret)
 
 
-@routes.route('/nntextgen/gallery/<name>')
+@routes.route("/nntextgen/gallery/<name>")
 def gallery(name: str) -> str:
     """The gallery endpoint for the nn text gen project.
 
@@ -404,13 +406,13 @@ def gallery(name: str) -> str:
         ret = {
             "title": project_info[name][0],
             "gallery_description": project_info[name][1],
-            "gallery": data
+            "gallery": data,
         }
     else:
         ret = {
             "title": "Error",
             "data_description": "A gallery for the given project does not exist",
-            "data": []
+            "data": [],
         }
 
     return render_template("/nntextgen/gallery.html", **ret)
