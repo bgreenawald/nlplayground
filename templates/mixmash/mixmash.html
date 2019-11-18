@@ -10,11 +10,14 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146481414-1"></script>
     <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+        window.dataLayer = window.dataLayer || [];
 
-    gtag('config', 'UA-146481414-1');
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-146481414-1');
     </script>
 
     <title>Biblical Trump</title>
@@ -57,10 +60,11 @@
                                 </div>
                             </div>
                             <div>
-                                <div id="result"  class="buffer-top buffer-left"></div>
+                                <div id="result" class="buffer-top buffer-left"></div>
 
                                 <div id="error_div" class="alert" style="display: none">
-                                    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                                    <span class="closebtn"
+                                        onclick="this.parentElement.style.display='none';">&times;</span>
                                     <strong>Error </strong><span id="error_msg"></span>
                                 </div>
                             </div>
@@ -73,11 +77,19 @@
                             <h2>Additional Options</h2>
 
                             <div class="option">
-                                <button class="button small" id="toggle_info" onclick="toggleInfo()">Read about options</button>
+                                <button class="button small" id="toggle_info" onclick="toggleInfo()">Read about
+                                    options</button>
 
                                 <div id="info" class="buffer-top" style="display: none;">
                                     <ol>
-                                        <li><strong>Memory: </strong>This option only take effect when more than one word is entered. If you enter a single word, this option does nothing. When using multiple words, it deals with what words should be given the most weight in the prediction of the next word. "Uniform" gives all words the same weight, "Decaying" gives more weight to more recent words, and "Random" give random weight. See the <a href="https://bgreenawald.github.io/blog/2018/markov-text-gen2.html">blog post</a> for this project for more details.</li>
+                                        <li><strong>Memory: </strong>This option only take effect when more than one
+                                            word is entered. If you enter a single word, this option does nothing. When
+                                            using multiple words, it deals with what words should be given the most
+                                            weight in the prediction of the next word. "Uniform" gives all words the
+                                            same weight, "Decaying" gives more weight to more recent words, and "Random"
+                                            give random weight. See the <a
+                                                href="https://bgreenawald.github.io/blog/2018/markov-text-gen2.html">blog
+                                                post</a> for this project for more details.</li>
                                     </ol>
                                 </div>
                             </div>
@@ -107,12 +119,13 @@
                                     {{ gallery_description }}
                                 </div>
 
-                                <button id="toggle_gallery" class="button small" onclick="toggleGallery()">Show the gallery</button>
+                                <button id="toggle_gallery" class="button small" onclick="toggleGallery()">Show the
+                                    gallery</button>
 
                                 <div id="gallery" class="buffer-top" style="display: none;">
                                     <ul>
                                         {% for elem in gallery %}
-                                            <li>{{ elem }}</li>
+                                        <li>{{ elem }}</li>
                                         {% endfor %}
                                     </ul>
                                 </div>
@@ -147,7 +160,6 @@
     <script src="/js/main.js"></script>
     <script src="/js/load.js"></script>
     <script>
-
         // Toggle functions
         function errorHTML(msg) {
             $("#error_div").show();
@@ -176,7 +188,7 @@
         }
 
         // Key read function
-        $("#message").keyup(function(event) {
+        $("#message").keyup(function (event) {
             if (event.keyCode === 13) {
                 $("#generate").click();
             }
@@ -206,9 +218,11 @@
                     "memory": memory,
                     "mechanism": mechanism
                 }),
-                beforeSend: function() {
+                beforeSend: function () {
                     // Update loading status for the user
-                    $("#result").html("<div class='row'><div class='loadersmall'></div><h4>Your phrase is loading, this can take a couple of seconds.</h4></div>");
+                    $("#result").html(
+                        "<div class='row'><div class='loadersmall'></div><h4>Your phrase is loading, this can take a couple of seconds.</h4></div>"
+                        );
 
                     // Disable input and clear old output
                     $("#generate").prop("disabled", true);
@@ -222,20 +236,22 @@
 
                     if (result["statusCode"] == 200) {
                         $("#error_div").hide();
-                        $("#result").html("<div class='row buffer-top buffer-left'><h4>" + result["body"] + "</h4></div>");
+                        $("#result").html("<div class='row buffer-top buffer-left'><h4>" + result["body"] +
+                            "</h4></div>");
                     } else {
-                        var error_str = "An error has occured. Refresh the page and try again. If the problem persists, please send an email to nlplayground@gmail.com describing the issue. ";
+                        var error_str =
+                            "An error has occured. Refresh the page and try again. If the problem persists, please send an email to nlplayground@gmail.com describing the issue. ";
 
                         if (typeof result == "object") {
                             error_str += "Error payload: " + result.stringify();
-                        } else if(typeof result == "string") {
+                        } else if (typeof result == "string") {
                             error_str += "Error payload: " + result;
                         }
 
                         $("#result").html(error_str);
                     }
                 },
-                error: function(jqXHR, textStatus, errorThrown) {
+                error: function (jqXHR, textStatus, errorThrown) {
                     var error_msg = `An error has occured. Error status: ${textStatus} ` +
                         `Error thrown: ${errorThrown}. Please refresh the page and if the ` +
                         `problem continues, contact bgreenawald@gmail.com.`

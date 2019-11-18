@@ -1,9 +1,9 @@
 import json
+from typing import Any, Dict
 
 import aiohttp
-import asyncio
 import async_timeout
-from quart import Blueprint, jsonify, render_template, request
+from quart import Blueprint, jsonify, request, Response
 
 api = Blueprint("api", __name__,)
 
@@ -11,7 +11,13 @@ BASE_URL = 'https://e5atpy4c73.execute-api.us-east-1.amazonaws.com/Prod'
 
 # Generic api
 @api.route('/api/madgab', methods=["POST"])
-async def madgab():
+async def madgab() -> Response:
+    """
+    Call the Madgab Lambda function.
+
+    Returns:
+        Response: The response from the Lambda function.
+    """
     API_KEY = "ZHLM6JdUyQaP1P2cpG1g54IhGk6Xf6Cv9vnIOLmL"
     HEADERS = {
         'Content-type': 'application/json',
@@ -28,7 +34,13 @@ async def madgab():
 
 
 @api.route('/api/mixandmash', methods=["POST"])
-async def mix_and_mash():
+async def mix_and_mash() -> Response:
+    """
+    Call the Mix and Mash Lambda function.
+
+    Returns:
+        Response: The response from the Lambda function..
+    """
     API_KEY = "rZCF070Iie2PlGnpmXD2f7sa5Ys153Aj2x204KW9"
     HEADERS = {
         'Content-type': 'application/json',
@@ -45,7 +57,13 @@ async def mix_and_mash():
 
 
 @api.route('/api/nntextgen', methods=["POST"])
-async def nn_text_gen():
+async def nn_text_gen() -> Response:
+    """
+    Call the NN Text Gen Lambda function.
+
+    Returns:
+        Response: The response from the Lambda function.
+    """
     api_map = {
         "boy_names": "ixczTTsgoAhhBxnlu81Z7Z9X3KdXVXw4xjBh3j1a",
         "girl_names": "z1mqdfws2q6LeXu3jb42E1dG2eEaaNW41ZwgUpUX",
@@ -79,7 +97,16 @@ async def nn_text_gen():
     return jsonify({"statusCode": status_code, "body": body})
 
 
-def validate(body):
+def validate(body: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Validate the types of the request payload.
+
+    Args:
+        body (Dict[str, Any]): Request data.
+
+    Returns:
+        Dict[str, Any]: Request data after type validation and transformation.
+    """
     body["seed"] = str(body.get("seed", ""))
     body["iters"] = int(body.get("iters", 5))
     body["exact"] = bool(body.get("exact", True))

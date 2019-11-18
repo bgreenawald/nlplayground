@@ -1,3 +1,13 @@
+# Virtual environments
 env/
 winenv/
+
+# Compiled files
 *.pyc
+
+# Compress files
+*.zip
+
+# Caches
+.mypy_cache/*
+__pycache__/*

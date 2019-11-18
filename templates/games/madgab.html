@@ -10,11 +10,14 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-146481414-1"></script>
     <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+        window.dataLayer = window.dataLayer || [];
 
-    gtag('config', 'UA-146481414-1');
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-146481414-1');
     </script>
 
     <title>Madgab</title>
@@ -43,7 +46,8 @@
 
                         <h1>MadGab</h1>
                         <div>
-                            <p>Generates a "MadGabed" version of the input phrase. Basically, it changes the spelling of a word, spelling it based on how the word sounds.</p>
+                            <p>Generates a "MadGabed" version of the input phrase. Basically, it changes the spelling of
+                                a word, spelling it based on how the word sounds.</p>
 
                             <div class="row">
                                 <div class="col-8 col-12-small buffer-top">
@@ -55,10 +59,11 @@
                             </div>
 
                             <div class="buffer-top">
-                                <div id="result"  class="buffer-top buffer-left"></div>
+                                <div id="result" class="buffer-top buffer-left"></div>
 
                                 <div id="error_div" class="alert" style="display: none">
-                                    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                                    <span class="closebtn"
+                                        onclick="this.parentElement.style.display='none';">&times;</span>
                                     <strong>Error </strong><span id="error_msg"></span>
                                 </div>
                             </div>
@@ -71,11 +76,14 @@
                             <h2>Additional Options</h2>
 
                             <div class="option">
-                                <button class="button small" id="toggle_info" onclick="toggleInfo()">Read about options</button>
+                                <button class="button small" id="toggle_info" onclick="toggleInfo()">Read about
+                                    options</button>
 
                                 <div id="info" class="buffer-top" style="display: none;">
                                     <ol>
-                                        <li><strong>Difficulty: </strong>If set to "Easy", the return value will just change the spelling of each word in the input. If set to "Hard", the spaces will also be randomized in the return value.</li>
+                                        <li><strong>Difficulty: </strong>If set to "Easy", the return value will just
+                                            change the spelling of each word in the input. If set to "Hard", the spaces
+                                            will also be randomized in the return value.</li>
                                     </ol>
                                 </div>
                             </div>
@@ -112,7 +120,6 @@
     <script src="/js/main.js"></script>
 
     <script>
-
         // Toggle functions
         function errorHTML(msg) {
             $("#error_div").show();
@@ -130,7 +137,7 @@
         }
 
         // Key read function
-        $("#message").keyup(function(event) {
+        $("#message").keyup(function (event) {
             if (event.keyCode === 13) {
                 $("#generate").click();
             }
@@ -156,9 +163,11 @@
                     "message": message,
                     "difficulty": difficulty
                 }),
-                beforeSend: function() {
+                beforeSend: function () {
                     // Update status for the user
-                    $("#result").html("<div class='row'><div class='loadersmall'></div><h4>Your word is loading, this can take a couple of seconds.</h4></div>");
+                    $("#result").html(
+                        "<div class='row'><div class='loadersmall'></div><h4>Your word is loading, this can take a couple of seconds.</h4></div>"
+                        );
 
                     // Disable input and clear old output
                     $("#generate").prop("disabled", true);
@@ -172,20 +181,22 @@
 
                     if (result["statusCode"] == 200) {
                         $("#error_div").hide();
-                        $("#result").html("<div class='row buffer-top'><h4>" + result["body"] + "</h4></div>");
+                        $("#result").html("<div class='row buffer-top'><h4>" + result["body"] +
+                            "</h4></div>");
                     } else {
-                        var error_str = "An error has occured. Refresh the page and try again. If the problem persists, please send an email to nlplayground@gmail.com describing the issue. ";
+                        var error_str =
+                            "An error has occured. Refresh the page and try again. If the problem persists, please send an email to nlplayground@gmail.com describing the issue. ";
 
                         if (typeof result == "object") {
                             error_str += "Error payload: " + result.stringify();
-                        } else if(typeof result == "string") {
+                        } else if (typeof result == "string") {
                             error_str += "Error payload: " + result;
                         }
 
                         $("#result").html(error_str);
                     }
                 },
-                error: function(jqXHR, textStatus, errorThrown) {
+                error: function (jqXHR, textStatus, errorThrown) {
                     var error_msg = `An error has occured. Error status: ${textStatus} ` +
                         `Error thrown: ${errorThrown}. Please refresh the page and if the ` +
                         `problem continues, contact bgreenawald@gmail.com.`
@@ -195,7 +206,6 @@
                 timeout: 30000,
             })
         };
-
     </script>
 
 </body>

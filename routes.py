@@ -7,22 +7,50 @@ routes = Blueprint("routes", __name__, static_url_path='', static_folder='assets
 
 # Generic routes
 @routes.route('/')
-def index():
+def index() -> str:
+    """
+    The home page route.
+
+    Returns:
+        str: The home page template.
+    """
     return render_template("index.html")
 
 
 @routes.route('/sidebar')
-def sidebar():
+def sidebar() -> str:
+    """
+    Returns the sidebar. Used to keep one version of the sidebar globally.
+
+    Returns:
+        str: The sidebar template.
+    """
     return render_template('sidebar.html')
 
 
 @routes.route('/header')
-def header():
+def header() -> str:
+    """
+    Returns the header. Used to keep one version of the header globally.
+
+    Returns:
+        str: The header template.k
+    """
     return render_template('header.html')
 
 
 @routes.route('/games/<name>')
-def games(name):
+def games(name: str) -> str:
+    """
+    The games route. Return the correct game page based on the route.
+
+    Args:
+        name (str): The name of the game to load.
+
+    Returns:
+        str: The template for the corresponding game or the index template if the game
+            does not exist.
+    """
     name_map = {
         "madgab": 'games/madgab.html',
     }
@@ -34,29 +62,45 @@ def games(name):
 
 
 @routes.route('/mixmash/<name>')
-def mixmash(name):
+def mixmash(name: str) -> str:
+    """
+    The mix and mash route. Returns the correct mix and mash project based on the
+    provided name.
+
+    Args:
+        name (str): The name of the mix and mash project to load.
+
+    Returns:
+        str: The corresponding mix and mash template or the index template if
+            the project is not found.
+    """
     if name == "biblicaltrump":
         data = {
             "project_name": "biblical_trump",
             "title": "Biblical Trump",
             "description": Markup("""
-                <p>What would Trump sounds like if he tweeted during Biblical times?
-                This is not meant to be political, just having some fun. Read more about the project
-                <a href="https://bgreenawald.github.io/blog/2018/markov-text-gen.html">here.</a></p>
+                <p>What would Trump sounds like if he tweeted
+                during Biblical times?
+                This is not meant to be political, just having some fun.
+                Read more about the project
+                <a href="https://bgreenawald.github.io/blog/2018/markov-text-gen.html">
+                here.</a></p>
             """),
             "gallery_description": Markup("""
-                <p>See a gallery of some of my favorite biblical Trumpisms. Capitalization done manually.</p>
+                <p>See a gallery of some of my favorite biblical Trumpisms.
+                Capitalization done manually.</p>
             """),
             "gallery": [
                 "Though shalt not go use Twitter Trump",
                 "I am the Ephraimites best which was great",
-                "The midst of seventy years agothis is mad sometimes referred to be long massive tax just named Eutychus being stubborn can call it",
+                "The midst of seventy years agothis is mad sometimes referred to be long massive tax just named Eutychus being stubborn can call it",  # noqa: E501
                 "The original costume was Susan Berry",
-                "Who was a son of them thou shalt thou art not the word again despite Obamas terrible",
+                "Who was a son of them thou shalt thou art not the word again despite Obamas terrible",  # noqa: E501
                 "Spectacular panoramic views of the ground",
             ],
             "data": Markup("""
-                <p>The data for this project was the Gutenburg Bible and an archive of <a href="https://github.com/mkearney/trumptweets">Trump's tweets</a></p>
+                <p>The data for this project was the Gutenburg Bible and an archive of
+                <a href="https://github.com/mkearney/trumptweets">Trump's tweets</a></p>
             """)
         }
 
@@ -66,12 +110,29 @@ def mixmash(name):
 
 
 @routes.route('/mixmash')
-def mixmash_index():
+def mixmash_index() -> str:
+    """
+    Return the mix and mash homepage.
+
+    Returns:
+        str: The mix and mash homepage template.
+    """
     return render_template("/mixmash/index.html")
 
 
 @routes.route('/nntextgen/<name>')
-def textgen(name):
+def textgen(name: str) -> str:
+    """
+    The NN text gen route. Returns the correct nn text gen project based on the
+    name.
+
+    Args:
+        name (str): The name of the project to load.
+
+    Returns:
+        str: The corresponding nn text gen template or the index template if the project
+            does not exist.
+    """
     data = {
         "boy_names": {
             "project_name": "boy_names",
@@ -103,7 +164,9 @@ def textgen(name):
                 <a href="/nntextgen/gallery/boy_names">See the full gallery.</a>
             """),
             "data_description": Markup("""
-                <p>This model was trained on 1000 boy names from <a href="https://www.babble.com/pregnancy/1000-most-popular-boy-names/">here.</a></p>
+                <p>This model was trained on 1000 boy names from
+                <a href="https://www.babble.com/pregnancy/1000-most-popular-boy-names/">
+                here.</a></p>
             """),
             "data_full": Markup("""
                 <a href="/nntextgen/data/boy_names">See the full data.</a>
@@ -139,7 +202,9 @@ def textgen(name):
                 <a href="/nntextgen/gallery/girl_names">See the full gallery.</a>
             """),
             "data_description": Markup("""
-                <p>This model was trained on 1000 girl names from <a href="https://www.babble.com/pregnancy/1000-most-popular-girl-names/">here.</a></p>
+                <p>This model was trained on 1000 girl names from
+                <a href="https://www.babble.com/pregnancy/1000-most-popular-girl-names/">
+                here.</a></p>
             """),
             "data_full": Markup("""
                 <a href="/nntextgen/data/girl_names">See the full data.</a>
@@ -168,8 +233,8 @@ def textgen(name):
                 <a href="/nntextgen/gallery/stripper_names">See the full gallery.</a>
             """),
             "data_description": Markup("""
-                <p>This model was trained over 8000 adult film actress names scraped from various
-                sources.</p>
+                <p>This model was trained over 8000 adult film actress names scraped
+                from various sources.</p>
             """),
             "data_full": Markup("""
                 <a href="/nntextgen/data/stripper_names">See the full data.</a>
@@ -199,7 +264,8 @@ def textgen(name):
             """),
             "data_description": Markup("""
                 <p>This model was train on all Pokemon names (pre Sword and Shield) from
-                <a href="https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_name">here.</a></p>
+                <a href="https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_name">
+                here.</a></p>
             """),
             "data_full": Markup("""
                 <a href="/nntextgen/data/pokemon_names">See the full data.</a>
@@ -230,7 +296,8 @@ def textgen(name):
             """),
             "data_description": Markup("""
                 <p>This model was trained on over 1500 dinosaur names from
-                <a href="https://en.wikipedia.org/wiki/List_of_dinosaur_genera">here.</a></p>
+                <a href="https://en.wikipedia.org/wiki/List_of_dinosaur_genera">here.
+                </a></p>
             """),
             "data_full": Markup("""
                 <a href="/nntextgen/data/dinosaur_names">See the full data.</a>
@@ -245,12 +312,28 @@ def textgen(name):
 
 
 @routes.route('/nntextgen')
-def nntextgen_index():
+def nntextgen_index() -> str:
+    """
+    The home page for the nn text gen project.
+
+    Returns:
+        str: The home page template for nn text gen.
+    """
     return render_template("/nntextgen/index.html")
 
 
 @routes.route('/nntextgen/data/<name>')
-def data(name):
+def data(name: str) -> str:
+    """
+    Data endpoint for nn text gen projects.
+
+    Args:
+        name (str): The name of the nn text project to get data for.
+
+    Returns:
+        str: The populated data template for the given nn text gen project, or
+            an error template if the given project is not found.
+    """
     project_info = {
         "boy_names": ("Boy Names", Markup("""
             <p>This model was trained on 1000 boy names from
@@ -261,11 +344,13 @@ def data(name):
             <a href="https://www.babble.com/pregnancy/1000-most-popular-girl-names/">here.</a></p>
         """)),
         "stripper_names": ("Stripper Names", Markup("""
-            <p>This model was trained on 8000 adult film actress names from a variety of sources.</p>
+            <p>This model was trained on 8000 adult film actress names from a
+            variety of sources.</p>
         """)),
         "pokemon_names": ("Pokemon Names", Markup("""
             <p>This model was train on all Pokemon names (pre Sword and Shield) from
-            <a href="https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_name">here.</a></p>
+            <a href="https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_name">
+            here.</a></p>
         """)),
         "dinosaur_names": ("Dinosaur Names", Markup("""
             <p>This model was trained on over 1500 dinosaur names from
@@ -294,7 +379,16 @@ def data(name):
 
 
 @routes.route('/nntextgen/gallery/<name>')
-def gallery(name):
+def gallery(name: str) -> str:
+    """The gallery endpoint for the nn text gen project.
+
+    Args:
+        name (str): The name of the project to load the gallery for.
+
+    Returns:
+        str: The populated gallery template for the given project, or an error template
+            if the project is not found.
+    """
     project_info = {
         "boy_names": ("Boy Names", "9000 boy names generated from the model."),
         "girl_names": ("Girl Names", "9000 girl names generated from the model."),
