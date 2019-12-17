@@ -36,9 +36,20 @@ def header() -> str:
     Returns the header. Used to keep one version of the header globally.
 
     Returns:
-        str: The header template.k
+        str: The header template.
     """
     return render_template("header.html")
+
+
+@routes.route("/games")
+def games_index() -> str:
+    """
+    The home page for the game project.
+
+    Returns:
+        str: The home page template for games.
+    """
+    return render_template("/games/index.html")
 
 
 @routes.route("/games/<name>")
@@ -58,9 +69,20 @@ def games(name: str) -> str:
     }
 
     if name not in name_map:
-        return render_template("index.html")
+        return render_template("/games/index.html")
     else:
         return render_template(name_map[name])
+
+
+@routes.route("/mixmash")
+def mixmash_index() -> str:
+    """
+    Return the mix and mash homepage.
+
+    Returns:
+        str: The mix and mash homepage template.
+    """
+    return render_template("/mixmash/index.html")
 
 
 @routes.route("/mixmash/<name>")
@@ -106,20 +128,20 @@ def mixmash(name: str) -> str:
             """)
         }
 
-        return render_template("mixmash/mixmash.html", **data)
+        return render_template("/mixmash/mixmash.html", **data)
     else:
-        return render_template("index.html")
+        return render_template("/mixmash/index.html")
 
 
-@routes.route("/mixmash")
-def mixmash_index() -> str:
+@routes.route("/nntextgen")
+def nntextgen_index() -> str:
     """
-    Return the mix and mash homepage.
+    The home page for the nn text gen project.
 
     Returns:
-        str: The mix and mash homepage template.
+        str: The home page template for nn text gen.
     """
-    return render_template("/mixmash/index.html")
+    return render_template("/nntextgen/index.html")
 
 
 @routes.route("/nntextgen/<name>")
@@ -310,18 +332,7 @@ def textgen(name: str) -> str:
     if name in data:
         return render_template("/nntextgen/nntextgen.html", **data[name])
     else:
-        return render_template("index.html")
-
-
-@routes.route("/nntextgen")
-def nntextgen_index() -> str:
-    """
-    The home page for the nn text gen project.
-
-    Returns:
-        str: The home page template for nn text gen.
-    """
-    return render_template("/nntextgen/index.html")
+        return render_template("/nntextgen/index.html")
 
 
 @routes.route("/nntextgen/data/<name>")
