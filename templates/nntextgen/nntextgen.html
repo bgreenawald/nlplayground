@@ -297,7 +297,7 @@
                 data: JSON.stringify(res),
                 beforeSend: function() {
                     // Update status for the user
-                    $("#result").html("<div class='row'><div class='loadersmall'></div><h4>Your word is loading, since we're dealing with nueral networks, this can take up to a minute, but should only take a couple of seconds.</h4></div>");
+                    $("#result").html("<div class='row'><div class='loadersmall'></div><h4>Your result is loading. This can take a little bit of time, especially if this is the first result you are loading.</h4></div>");
 
                     // Disable input and clear old output
                     $("#post_div").html("");
