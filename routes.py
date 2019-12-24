@@ -164,12 +164,13 @@ def textgen(name: str) -> str:
             "title": "Boy Names",
             "description": Markup("""
                 <p>Generates new boy names from a dataset of 1000 boy names.
-                Enter some starting characters in the box below to get the
+                Enter some starting characters in the box below (2 characters max) to get the
                 algorithm started, or leave blank for a random start. Tweak
                 the options to your liking and click "Generate" when you're ready!</p>
             """),
             "iters": list(range(1, 11)),
             "selected": 5,
+            "max_seed_length": 2,
             "gallery_description": Markup("""
                 <p>Some of my favorite generated names.</p>
             """),
@@ -202,12 +203,13 @@ def textgen(name: str) -> str:
             "title": "Girl Names",
             "description": Markup("""
                 <p>Generates new girls names from a dataset of 1000 girl names.
-                Enter some starting characters in the box below to get the
+                Enter some starting characters in the box below (2 characters max) to get the
                 algorithm started, or leave blank for a random start. Tweak
                 the options to your liking and click "Generate" when you're ready!</p>
             """),
             "iters": list(range(1, 11)),
             "selected": 5,
+            "max_seed_length": 2,
             "gallery_description": Markup("""
                 <p>Some of my favorite generated names.</p>
             """),
@@ -241,12 +243,13 @@ def textgen(name: str) -> str:
             "description": Markup("""
                 <p>Generates new stripper names from a dataset of over
                 8000 adult film actresses.
-                Enter some starting characters in the box below to get the
+                Enter some starting characters in the box below (3 characters max) to get the
                 algorithm started, or leave blank for a random start. Tweak
                 the options to your liking and click "Generate" when you're ready!</p>
             """),
             "iters": list(range(1, 6)),
             "selected": 3,
+            "max_seed_length": 3,
             "gallery_description": Markup("""
                 <p>Some of my favorite generated names.</p>
             """),
@@ -270,12 +273,13 @@ def textgen(name: str) -> str:
             "title": "Pokemon Names",
             "description": Markup("""
                 <p>Over 800 Pokemon not enough? Generate some new ones!
-                Enter some starting characters in the box below to get the
+                Enter some starting characters in the box below (2 characters max) to get the
                 algorithm started, or leave blank for a random start. Tweak
                 the options to your liking and click "Generate" when you're ready!</p>
             """),
             "iters": list(range(1, 11)),
             "selected": 5,
+            "max_seed_length": 2,
             "gallery_description": Markup("""
                 <p>Some of my favorite generated names.</p>
             """),
@@ -302,12 +306,13 @@ def textgen(name: str) -> str:
             "description": Markup("""
                 <p>Need some inspiration for you latest prehistoric archaeological
                 discover? Generate yourself some new dinosaurs names!
-                Enter some starting characters in the box below to get the
+                Enter some starting characters in the box below (2 characters max) to get the
                 algorithm started, or leave blank for a random start. Tweak
                 the options to your liking and click "Generate" when you're ready!</p>
             """),
             "iters": list(range(1, 6)),
             "selected": 3,
+            "max_seed_length": 2,
             "gallery_description": Markup("""
                 <p>Some of my favorite generated names.</p>
             """),

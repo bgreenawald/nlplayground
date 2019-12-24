@@ -62,6 +62,11 @@
                                 <div id="post_div"></div>
                             </div>
 
+                            <div id="error_div" class="alert" style="display: none">
+                                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                                <strong>Error </strong><span id="error_msg"></span>
+                           </div>
+
                         </div>
 
                         <hr>
@@ -81,11 +86,6 @@
                                         <li><strong>Postprocess: </strong>Whether or not to perform the postprocessing step. The postprocessing compares each resulting observation and figures out which observation in the original dataset it is most like using a variety of criteria.</li>
                                     </ol>
                                 </div>
-                            </div>
-
-                            <div id="error_div" class="alert" style="display: none">
-                                 <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-                                 <strong>Error </strong><span id="error_msg"></span>
                             </div>
 
                             <div class="row option">
@@ -275,6 +275,11 @@
 
             if (isNaN(temperature) || temperature <= 0) {
                 $("#error_div").html(errorHTML("Temperature must be a number greater than 0."))
+                return
+            }
+
+            if (seed.length > {{ max_seed_length }}) {
+                $("#error_div").html(errorHTML("Too many characters entered"))
                 return
             }
 
