@@ -263,120 +263,129 @@
 
         // Back end logic functions
         function callAwsLambdaFunction() {
-            var seed = $("#message").val();
-            var iters = $("#iters").val();
-            var exact = $("#exact").val();
-            var temperature = $("#temperature").val();
-            var start = $("#start").val();
-            var post = $("#post").val();
+            try {
+                var seed = $("#message").val();
+                var iters = $("#iters").val();
+                var exact = $("#exact").val();
+                var temperature = $("#temperature").val();
+                var start = $("#start").val();
+                var post = $("#post").val();
 
-            // Validate the temperature
-            temperature = parseFloat(temperature);
+                // Validate the temperature
+                temperature = parseFloat(temperature);
 
-            if (isNaN(temperature) || temperature <= 0) {
-                $("#error_div").html(errorHTML("Temperature must be a number greater than 0."))
-                return
-            }
+                if (isNaN(temperature) || temperature <= 0) {
+                    errorHTML("Temperature must be a number greater than 0.");
+                    return;
+                }
 
-            if (seed.length > {{ max_seed_length }}) {
-                $("#error_div").html(errorHTML("Too many characters entered"))
-                return
-            }
+                if (seed.length > {{ max_seed_length }}) {
+                    errorHTML("Too many characters entered");
+                    return;
+                }
 
-            // Create the payload
-            var res = {
-                "project": "{{ project_name }}",
-                "seed": seed,
-                "iters": iters,
-                "exact": exact == "exact",
-                "temperature": temperature,
-                "same_start": start == "same",
-                "postprocess": post == "yes",
-            }
+                // Create the payload
+                var res = {
+                    "project": "{{ project_name }}",
+                    "seed": seed,
+                    "iters": iters,
+                    "exact": exact == "exact",
+                    "temperature": temperature,
+                    "same_start": start == "same",
+                    "postprocess": post == "yes",
+                }
 
-            $.ajax({
-                url: "/api/nntextgen",
-                contentType: "application/json",
-                method: "POST",
-                dataType: 'json',
-                data: JSON.stringify(res),
-                beforeSend: function() {
-                    // Update status for the user
-                    $("#result").html("<div class='row'><div class='loadersmall'></div><h4>Your result is loading. This can take a little bit of time, especially if this is the first result you are loading.</h4></div>");
+                $.ajax({
+                    url: "/api/nntextgen",
+                    contentType: "application/json",
+                    method: "POST",
+                    dataType: 'json',
+                    data: JSON.stringify(res),
+                    beforeSend: function() {
+                        // Update status for the user
+                        $("#result").html("<div class='row'><div class='loadersmall'></div><h4>Your result is loading. This can take a little bit of time, especially if this is the first result you are loading.</h4></div>");
 
-                    // Disable input and clear old output
-                    $("#post_div").html("");
-                    $("#error_div").hide();
-                    $("#generate").prop("disabled", true);
-                    $("#message").prop("disabled", true);
-                },
-                success: function (result) {
-                    // Re-enable user input
-                    $("#generate").prop("disabled", false);
-                    $("#message").prop("disabled", false);
-                    if (result["statusCode"] == 200) {
-                        temp = result["body"];
-                        var res_div = "<h3>Results</h3><ol>";
-                        var post_div = "<h3>Postprocess Results</h3><a href='https://jellyfish.readthedocs.io/en/latest/comparison.html'>Read more about the postprocess metrics.</a><br><br><table><thead>" +
-                            "<tr>" +
-                            "<th>Name</th>" +
-                            "<th>SequenceMatcher</th>" +
-                            "<th>Levenshtein</th>" +
-                            "<th>Damerau Levenshtein</th>" +
-                            "<th>Hamming</th>" +
-                            "<th>Jaro</th>" +
-                            "<th>Jaro Winkler</th>" +
-                            "<th>Subset</th>" +
-                            "</tr></thead><tbody>"
+                        // Disable input and clear old output
+                        $("#post_div").html("");
+                        $("#error_div").hide();
+                        $("#generate").prop("disabled", true);
+                        $("#message").prop("disabled", true);
+                    },
+                    success: function (result) {
+                        // Re-enable user input
+                        $("#generate").prop("disabled", false);
+                        $("#message").prop("disabled", false);
+                        if (result["statusCode"] == 200) {
+                            temp = result["body"];
+                            var res_div = "<h3>Results</h3><ol>";
+                            var post_div = "<h3>Postprocess Results</h3><a href='https://jellyfish.readthedocs.io/en/latest/comparison.html'>Read more about the postprocess metrics.</a><br><br><table><thead>" +
+                                "<tr>" +
+                                "<th>Name</th>" +
+                                "<th>SequenceMatcher</th>" +
+                                "<th>Levenshtein</th>" +
+                                "<th>Damerau Levenshtein</th>" +
+                                "<th>Hamming</th>" +
+                                "<th>Jaro</th>" +
+                                "<th>Jaro Winkler</th>" +
+                                "<th>Subset</th>" +
+                                "</tr></thead><tbody>"
 
-                        temp.forEach(function(elem) {
-                            if (elem["isOriginal"]){
-                                res_div += "<li><strong>" + cap(elem["message"]) + "</strong></li>"
-                            } else {
-                                res_div += "<li>" + cap(elem["message"]) + "</li>"
+                            temp.forEach(function(elem) {
+                                if (elem["isOriginal"]){
+                                    res_div += "<li><strong>" + cap(elem["message"]) + "</strong></li>"
+                                } else {
+                                    res_div += "<li>" + cap(elem["message"]) + "</li>"
+                                }
+
+                                if (elem.hasOwnProperty("hamming") && post == "yes" && elem["isOriginal"]) {
+                                    post_div += "<tr>" +
+                                        "<td>" + cap(elem["message"]) + "</td>" +
+                                        "<td>" + cap(elem["sequence_matcher"]) + "</td>" +
+                                        "<td>" + cap(elem["levenshtein"]) + "</td>" +
+                                        "<td>" + cap(elem["damerau_levenshtein"]) + "</td>" +
+                                        "<td>" + cap(elem["hamming"]) + "</td>" +
+                                        "<td>" + cap(elem["jaro"]) + "</td>" +
+                                        "<td>" + cap(elem["jaro_winkler"]) + "</td>" +
+                                        "<td>" + elem["subsets"].map(cap).join(", ") + "</td>" +
+                                        "</tr>"
+                                }
+                            })
+                            res_div += "</ol><span>A <strong>bold</strong> entry above means that result is original, not found in the original data.</span>"
+                            post_div += "</tbody></table>"
+                            $("#result").html(res_div);
+                            if (post == "yes") {
+                                $("#post_div").html(post_div);
                             }
 
-                            if (elem.hasOwnProperty("hamming") && post == "yes" && elem["isOriginal"]) {
-                                post_div += "<tr>" +
-                                    "<td>" + cap(elem["message"]) + "</td>" +
-                                    "<td>" + cap(elem["sequence_matcher"]) + "</td>" +
-                                    "<td>" + cap(elem["levenshtein"]) + "</td>" +
-                                    "<td>" + cap(elem["damerau_levenshtein"]) + "</td>" +
-                                    "<td>" + cap(elem["hamming"]) + "</td>" +
-                                    "<td>" + cap(elem["jaro"]) + "</td>" +
-                                    "<td>" + cap(elem["jaro_winkler"]) + "</td>" +
-                                    "<td>" + elem["subsets"].map(cap).join(", ") + "</td>" +
-                                    "</tr>"
+                        } else {
+                            var error_str = "An error has occured.  ";
+
+                            if (typeof result == "object") {
+                                if ("body" in result) {
+                                    error_str = result["body"];
+                                } else {
+                                    error_str += `An error has occured. Error: ${JSON.stringify(result)}. Refresh the page and try again. If the problem persists, please send an email to bgreenawald@gmail.com describing the issue.`;
+                                }
+                            } else if(typeof result == "string") {
+                                error_str += `An error has occured. Error: ${result}. Refresh the page and try again. If the problem persists, please send an email to bgreenawald@gmail.com describing the issue.`;
                             }
-                        })
-                        res_div += "</ol><span>A <strong>bold</strong> entry above means that result is original, not found in the original data.</span>"
-                        post_div += "</tbody></table>"
-                        $("#result").html(res_div);
-                        if (post == "yes") {
-                            $("#post_div").html(post_div);
+
+                            $("#result").html("");
+                            errorHTML(error_str);
                         }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        var error_msg = `An error has occured. Error status: ${textStatus} Error thrown: ${errorThrown}. Please refresh the page and if the problem continues, contact bgreenawald@gmail.com.`
 
-                    } else {
-                        var error_str = "An error has occured. Refresh the page and try again. If the problem persists, please send an email to nlplayground@gmail.com describing the issue. ";
-
-                        if (typeof result == "object") {
-                            error_str += "Error payload: " + result.stringify();
-                        } else if(typeof result == "string") {
-                            error_str += "Error payload: " + result;
-                        }
-
-                        $("#result").html(error_str);
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    var error_msg = `An error has occured. Error status: ${textStatus} ` +
-                        `Error thrown: ${errorThrown}. Please refresh the page and if the ` +
-                        `problem continues, contact bgreenawald@gmail.com.`
-
-                    $("#result").html(error_msg);
-                },
-                timeout: 30000,
-            });
+                        $("#result").html("");
+                        errorHTML(error_msg);
+                    },
+                    timeout: 30000,
+                });
+            } catch(error) {
+                $("#result").html("");
+                errorHTML(error);
+            }
         };
     </script>
 

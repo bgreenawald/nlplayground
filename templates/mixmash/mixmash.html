@@ -196,70 +196,76 @@
 
         // Back end logic functions
         function callAwsLambdaFunction() {
-            var message = document.getElementById("message").value;
-            var memory_val = document.getElementById("memory").value;
+            try {
+                var message = document.getElementById("message").value;
+                var memory_val = document.getElementById("memory").value;
 
-            if (memory_val == "none") {
-                var memory = false;
-                var mechanism = "none";
-            } else {
-                var memory = true;
-                var mechanism = memory_val;
+                if (memory_val == "none") {
+                    var memory = false;
+                    var mechanism = "none";
+                } else {
+                    var memory = true;
+                    var mechanism = memory_val;
+                }
+
+                $.ajax({
+                    url: "/api/mixandmash",
+                    contentType: "application/json",
+                    method: "POST",
+                    dataType: 'json',
+                    data: JSON.stringify({
+                        "message": message,
+                        "project": "{{ project_name }}",
+                        "memory": memory,
+                        "mechanism": mechanism
+                    }),
+                    beforeSend: function () {
+                        // Update loading status for the user
+                        $("#result").html(
+                            "<div class='row'><div class='loadersmall'></div><h4>Your phrase is loading. This can take a couple of seconds, especially if this is the first phrase you are loading.</h4></div>"
+                            );
+
+                        // Disable input and clear old output
+                        $("#generate").prop("disabled", true);
+                        $("#message").prop("disabled", true);
+                        $("#error_div").hide();
+                    },
+                    success: function (result) {
+                        // Re-enable user input
+                        $("#generate").prop("disabled", false);
+                        $("#message").prop("disabled", false);
+
+                        if (result["statusCode"] == 200) {
+                            $("#result").html("<div class='row buffer-top buffer-left'><h4>" + result["body"] +
+                                "</h4></div>");
+                        } else {
+                            if (typeof result == "object") {
+                                if ("body" in result) {
+                                    error_str = result["body"];
+                                } else {
+                                    error_str = `An error has occured. Error: " + ${JSON.stringify(result)}. Refresh the page and try again. If the problem persists, please send an email to bgreenawald@gmail.com describing the issue.`;
+                                }
+                            } else if (typeof result == "string") {
+                                error_str = `An error has occured. Error: ${result}. Refresh the page and try again. If the problem persists, please send an email to bgreenawald@gmail.com describing the issue.`;
+                            }
+
+                            $("#result").html("");
+                            errorHTML(error_str);
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        var error_msg = `An error has occured. Error status: ${textStatus} Error thrown: ${errorThrown}. Please refresh the page and if the problem continues, contact bgreenawald@gmail.com.`
+
+                        $("#result").html("");
+                        errorHTML(error_msg);
+                    },
+                    timeout: 30000,
+                })
+            } catch(error){
+                $("result").html("");
+                errorHTML(error);
             }
 
-            $.ajax({
-                url: "/api/mixandmash",
-                contentType: "application/json",
-                method: "POST",
-                dataType: 'json',
-                data: JSON.stringify({
-                    "message": message,
-                    "project": "{{ project_name }}",
-                    "memory": memory,
-                    "mechanism": mechanism
-                }),
-                beforeSend: function () {
-                    // Update loading status for the user
-                    $("#result").html(
-                        "<div class='row'><div class='loadersmall'></div><h4>Your phrase is loading. This can take a couple of seconds, especially if this is the first phrase you are loading.</h4></div>"
-                        );
-
-                    // Disable input and clear old output
-                    $("#generate").prop("disabled", true);
-                    $("#message").prop("disabled", true);
-                    $("#error_div").hide();
-                },
-                success: function (result) {
-                    // Re-enable user input
-                    $("#generate").prop("disabled", false);
-                    $("#message").prop("disabled", false);
-
-                    if (result["statusCode"] == 200) {
-                        $("#error_div").hide();
-                        $("#result").html("<div class='row buffer-top buffer-left'><h4>" + result["body"] +
-                            "</h4></div>");
-                    } else {
-                        var error_str =
-                            "An error has occured. Refresh the page and try again. If the problem persists, please send an email to nlplayground@gmail.com describing the issue. ";
-
-                        if (typeof result == "object") {
-                            error_str += "Error payload: " + result.stringify();
-                        } else if (typeof result == "string") {
-                            error_str += "Error payload: " + result;
-                        }
-
-                        $("#result").html(error_str);
-                    }
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    var error_msg = `An error has occured. Error status: ${textStatus} ` +
-                        `Error thrown: ${errorThrown}. Please refresh the page and if the ` +
-                        `problem continues, contact bgreenawald@gmail.com.`
-
-                    $("#result").html(error_msg);
-                },
-                timeout: 30000,
-            })
         };
     </script>
 
